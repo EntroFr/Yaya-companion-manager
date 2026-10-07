@@ -61,7 +61,7 @@ export function BossesPage({ orders, initialBossId = null }: { orders: OrderCont
       <div><p className="eyebrow">YAYA’S DIARY</p><h1>老板信息</h1><p className="muted">记录昵称、当前单价与备注，让每份资料清楚有序。</p></div>
       <button className="button primary" disabled={loading || busy} onClick={() => { setForm({}); setNotice('') }}>＋ 新增老板</button>
     </header>
-    <p className="storage-note">资料保存在当前浏览器；请使用同一浏览器和网址访问。清除浏览器数据会丢失资料。</p>
+    <p className="storage-note">资料已安全保存在本机数据库中，可通过“数据管理”进行备份与恢复。</p>
     {initialBossId && !loading && !bosses.some(boss => boss.id === initialBossId) && <p className="feedback error" role="alert">该老板不存在或已删除，请从列表重新选择。</p>}
     {error && <p className="feedback error" role="alert">{error}</p>}
     {notice && <p className="feedback success" role="status">{notice}</p>}
