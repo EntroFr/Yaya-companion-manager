@@ -1,6 +1,6 @@
 import { defaultRepository, githubDeployment } from '../deployment.js'
 // 网站展示与下载版本集中配置；不会修改 Electron 应用版本。
-const version = '1.2.0'
+const version = '1.2.1'
 const repository = import.meta.env.VITE_GITHUB_REPOSITORY || (import.meta.env.PROD ? defaultRepository : '')
 const release = githubDeployment(repository, version)
 // GitHub Pages 构建使用 Release；本地未指定仓库时保留原本下载。

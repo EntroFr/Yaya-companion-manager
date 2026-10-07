@@ -50,14 +50,14 @@ workflow 路径：.github/workflows/website-pages.yml。仅在默认分支的 we
 
 ## Release asset 下载
 
-本阶段没有上传任何 ZIP。必须先确保 GitHub 已存在 v1.2.0 tag，再在 Releases → Draft a new release 中选择现有 v1.2.0 tag，不要移动或重建 tag。
+本阶段没有上传任何 ZIP。必须先确保 GitHub 已存在 v1.2.1 tag，再在 Releases → Draft a new release 中选择现有 v1.2.1 tag，不要移动或重建 tag。
 
-将经过验收的 YayaDiary-1.2.0-Portable.zip 作为 asset 手动上传，再 Publish release。文件应保持该名称，大小与 SHA256 建议再次核对。
+将经过验收的 YayaDiary-1.2.1-Portable.zip 作为 asset 手动上传，再 Publish release。文件应保持该名称，大小与 SHA256 建议再次核对。
 
 Actions 构建后的下载目标为：
 
 ```text
-https://github.com/EntroFr/Yaya-companion-manager/releases/download/v1.2.0/YayaDiary-1.2.0-Portable.zip
+https://github.com/EntroFr/Yaya-companion-manager/releases/download/v1.2.1/YayaDiary-1.2.1-Portable.zip
 ```
 
 只有 Release 已发布且文件上传成功，下载才可用。不要上传至 Git 仓库，ZIP 继续被忽略。公开官网供用户下载时，Release asset 也应能匿名访问。

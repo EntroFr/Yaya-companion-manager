@@ -1,6 +1,6 @@
 # Yaya的陪玩日记
 
-## 当前发布版本：1.2.0
+## 当前发布版本：1.2.1
 
 日常使用和开发验证的推荐运行方式：
 
@@ -10,16 +10,19 @@ pnpm electron:local:formal
 
 该命令构建本地页面并通过现有 Electron 运行环境启动 SQLite 正式模式，不需要 Vite localhost。正式数据库位于 `%APPDATA%\Yaya-companion-manager\sqlite\yaya-companion.db`，独立于源码和程序目录。数据库、依赖、构建产物和发布包不属于 Git 备份；请在“数据管理”中单独备份账目。
 
-当前安装包及 Portable 未签名 EXE 可能被 Windows 11 Smart App Control / Code Integrity 阻止。当前阶段暂停安装逻辑、Portable 发布、安全策略与代码签名工作，以源码开发运行方式为主。下文相关发布与失败验收说明为历史记录。
+当前安装包及 Portable 未签名 EXE 可能被 Windows 11 Smart App Control / Code Integrity 阻止。本版本提供 Portable ZIP，同时保留源码开发运行方式；暂不处理安装逻辑、安全策略和代码签名。下文相关发布与失败验收说明为历史记录。
 
 完整检查：`pnpm test`、`pnpm lint`、`pnpm build`、`pnpm electron:test`。Electron 集成检查使用隔离测试数据库验证正式模式、备份恢复和刷新持久化，不操作正式业务数据。只读检查正式库可运行 `node scripts/check-formal-database.mjs`；该脚本不创建、迁移或修改数据库。
 
-后续开发以 `v1.2.0` 为基线；此前的 `v1.1.2-stable` 保留作为历史基线。本轮只整理版本与文档，不重新生成 Squirrel 安装包或 Portable。
+后续开发以 `v1.2.1` 为基线；此前的 `v1.1.2-stable` 保留作为历史基线。本次重新生成 v1.2.1 Portable，不生成 Squirrel 安装包。
 
-React + TypeScript + Vite 本地单用户 Windows 应用，支持浏览器与 Electron 桌面运行，当前版本 1.2.0。
-已完成老板资料、余额充值/调整、只读余额流水、订单生命周期、计时、结束订单一次性结算、打赏和今日/本周/本月统计。开发时保留三种独立数据源；Windows 安装版默认使用 SQLite 正式库，首次启动创建空库。已有旧资料需要自行导出并在“数据迁移”校验后导入，原资料不会被删除。以下阶段记录属于历史资料；当前计费遵循 1.1.0 的结束时一次性结算规则，提示音和历史展示以本页 1.2.0 说明为准。
+React + TypeScript + Vite 本地单用户 Windows 应用，支持浏览器与 Electron 桌面运行，当前版本 1.2.1。
+已完成老板资料、余额充值/调整、只读余额流水、订单生命周期、计时、结束订单一次性结算、打赏和今日/本周/本月统计。开发时保留三种独立数据源；Windows 安装版默认使用 SQLite 正式库，首次启动创建空库。已有旧资料需要自行导出并在“数据迁移”校验后导入，原资料不会被删除。以下阶段记录属于历史资料；当前计费遵循 1.1.0 的结束时一次性结算规则，提示音和历史展示以本页 1.2.1 说明为准。
 
-### v1.2.0 主要变化
+### v1.2.1 主要变化
+
+- 新增测试模式：完整体验业务，数据排除正式统计和 Excel；产生业务记录后锁定模式。旧资料升级默认正式模式，数据库 schema 5。
+- “其他”页面提供两次确认清空测试数据，以及三次确认 Portable 应用内卸载。卸载最终确认会删除程序与本机资料，请先备份。
 
 - 余额预计剩余时间首次进入5分钟以内时播放本地语音；预计余额归零时播放另一段语音。暂停不触发，刷新或重启不补播历史提醒，充值恢复后可再次提醒。
 - 首页“快捷操作”右上角提供提示音总开关，设置持久化；静音仍保留文字提示，计时和结算不受影响。
@@ -38,7 +41,7 @@ React + TypeScript + Vite 本地单用户 Windows 应用，支持浏览器与 El
 
 自动备份目录独立保存 `auto-backup-state.json`；日报文件名为 `YayaDiary-YYYY-MM-DD.xlsx`。可在“数据管理”备份、恢复或打开导出目录。安装包与 Portable 仍可能被 Windows Smart App Control / Code Integrity 阻止，暂未处理代码签名，不降低 Windows 安全策略。
 
-v1.2.0 最终检查：159项自动测试、lint、build，以及 Electron 隔离集成检查；测试不使用正式用户数据库。
+v1.2.1 最终检查：187项自动测试、lint、build，以及 Electron 隔离集成检查；测试不使用正式用户数据库。
 
 ## 启动与检查
 
