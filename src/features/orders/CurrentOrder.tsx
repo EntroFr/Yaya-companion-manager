@@ -5,6 +5,7 @@ import { formatDuration, serviceDurationMs } from './orderTime'
 import { formatMoney } from '../../utils/money'
 import { liveBilling, overtimeMinutes } from './billing'
 import { useBalanceAlert } from './useBalanceAlert'
+import { formatRemainingServiceTime, remainingServiceSeconds } from './balanceAlert'
 const orderStatusLabel = { active: '进行中', paused: '已暂停', completed: '已结束' }
 export function CurrentOrder({ controller, showEmpty = false }: { controller: OrderController; showEmpty?: boolean }) {
   const [now, setNow] = useState(Date.now)
@@ -18,7 +19,8 @@ export function CurrentOrder({ controller, showEmpty = false }: { controller: Or
   const boss = controller.bosses.find(b => b.id === order?.bossId)
   const live = order && boss ? liveBilling(order, boss.balanceCents, Math.max(now,order.startedAt)) : null
   const estimated = live?.consumptionCents ?? 0, available = live?.estimatedBalanceCents ?? 0
-  useBalanceAlert(order && boss ? order.id : null,available)
+  const remainingSeconds = remainingServiceSeconds(available, order?.hourlyRateCentsSnapshot ?? 0)
+  useBalanceAlert(order && boss ? order.id : null, available, order?.hourlyRateCentsSnapshot ?? 0, order?.status ?? 'completed')
   return <div id="order-area">
     {controller.error && <p className="feedback error" role="alert">{controller.error}</p>}
     {controller.notice && <p className="feedback success" role="status">{controller.notice}</p>}
@@ -36,9 +38,10 @@ export function CurrentOrder({ controller, showEmpty = false }: { controller: Or
             <div><p className="muted">实时预计余额</p><p className={available <= 0 ? 'danger' : ''}>{formatMoney(available)}</p><small>正式余额：{formatMoney(boss.balanceCents)}</small></div>
             <div><p className="muted">本单实时消费</p><p>{formatMoney(estimated)}</p></div>
             {order.settledAmountCents > 0 && <div><p className="muted">旧订单已扣费用（不重复收取）</p><p>{formatMoney(order.settledAmountCents)}</p></div>}
-            {available > 0 && <div><p className="muted">预计剩余服务时间</p><p>约 {(available / order.hourlyRateCentsSnapshot * 60).toLocaleString('zh-CN', { maximumFractionDigits: 2 })} 分钟</p></div>}
+            {available > 0 && <div><p className="muted">预计剩余服务时间</p><p>余额预计还可服务 {formatRemainingServiceTime(remainingSeconds)}</p></div>}
             {available <= 0 && <div><p className="muted">预计欠费金额 / 当前超时时间</p><p>{formatMoney(Math.abs(available))} · 约 {overtimeMinutes(available, order.hourlyRateCentsSnapshot)} 分钟</p></div>}
           </div>
+          {available > 0 && remainingSeconds <= 300 && <p className="feedback error" role="status">余额即将不足。{order.status === 'paused' ? '订单已暂停，暂停期间不计费。' : '请及时充值，余额耗尽后订单仍会继续。'}</p>}
           {available <= 0 && <p className="feedback error" role="status">老板余额已用完，当前进入超时服务。{order.status === 'paused' ? '订单已暂停，暂停期间不计费。' : '订单继续计时，结束时结算。'}</p>}
         </>}
         <div className="form-actions">
