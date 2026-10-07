@@ -8,6 +8,7 @@ import { CurrentOrder } from '../features/orders/CurrentOrder'
 import { parseRoute } from './navigation'
 import { MigrationPage } from '../pages/migration/MigrationPage'
 import { DataManagementPage } from '../pages/data/DataManagementPage'
+import { OtherPage } from '../pages/other/OtherPage'
 export default function App() {
   const orders = useOrders()
   const [route, setRoute] = useState(() => parseRoute(window.location.hash))
@@ -16,5 +17,5 @@ export default function App() {
     window.addEventListener('hashchange', navigate)
     return () => window.removeEventListener('hashchange', navigate)
   }, [])
-  return <AppLayout page={route.page}><CurrentOrder controller={orders} showEmpty={route.page === 'dashboard'} />{route.page === 'data' ? <DataManagementPage /> : route.page === 'migration' ? <MigrationPage /> : route.page === 'bosses' ? <BossesPage key={route.bossId ?? 'list'} orders={orders} initialBossId={route.bossId} /> : route.page === 'statistics' ? <StatisticsPage /> : <Dashboard controller={orders} />}</AppLayout>
+  return <AppLayout page={route.page}><CurrentOrder controller={orders} showEmpty={route.page === 'dashboard'} />{route.page === 'other' ? <OtherPage /> : route.page === 'data' ? <DataManagementPage /> : route.page === 'migration' ? <MigrationPage /> : route.page === 'bosses' ? <BossesPage key={route.bossId ?? 'list'} orders={orders} initialBossId={route.bossId} /> : route.page === 'statistics' ? <StatisticsPage /> : <Dashboard controller={orders} />}</AppLayout>
 }

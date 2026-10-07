@@ -1,5 +1,6 @@
-export interface AppRoute { page: 'dashboard' | 'bosses' | 'statistics' | 'migration' | 'data'; bossId: string | null }
+export interface AppRoute { page: 'dashboard' | 'bosses' | 'statistics' | 'migration' | 'data' | 'other'; bossId: string | null }
 export function parseRoute(hash: string): AppRoute {
+  if (hash === '#other') return { page: 'other', bossId: null }
   if (hash === '#data') return { page: 'data', bossId: null }
   if (hash === '#migration') return { page: 'migration', bossId: null }
   if (hash === '#statistics') return { page: 'statistics', bossId: null }

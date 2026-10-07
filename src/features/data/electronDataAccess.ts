@@ -7,6 +7,7 @@ type BridgeRepositories = { [G in keyof AsyncRepositories]: { [M in keyof AsyncR
 export interface DesktopBridge {
   mode: StorageMode
   packaged?: boolean
+  uninstall?: { status: () => Promise<Reply<{ available: boolean; message: string }>>; execute: () => Promise<Reply<null>> }
   repositories?: BridgeRepositories
   subscribe?: (listener: () => void) => () => void
 }

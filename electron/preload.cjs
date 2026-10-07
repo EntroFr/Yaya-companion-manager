@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 const mode = process.argv.includes('--yaya-storage=sqlite') ? 'sqlite' : process.argv.includes('--yaya-storage=sqlite-test') ? 'sqlite-test' : 'local-storage'
 const api = { mode }
 api.packaged = process.argv.includes('--yaya-packaged')
+api.uninstall = { status: () => ipcRenderer.invoke('yaya:uninstall:status'), execute: () => ipcRenderer.invoke('yaya:uninstall:execute') }
 if (mode !== 'local-storage') {
   const methods = {
     bosses: ['list', 'create', 'update', 'remove'],

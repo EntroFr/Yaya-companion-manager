@@ -181,3 +181,8 @@ dd { margin: 5px 0 0; overflow-wrap: anywhere; }
 .history-table th, .history-table td { white-space: nowrap; padding: 10px 12px; }
 .history-table td.notes { white-space: normal; min-width: 180px; max-width: 320px; }
 .history-toggle { margin-top: 12px; }
+.uninstall-content { text-align: center; }
+.uninstall-image { width: 100%; max-width: 300px; height: 220px; object-fit: contain; border-radius: 16px; background: #fff5f8; }
+.uninstall-warning { font-size: 13px; line-height: 1.65; color: #b42b48; padding: 12px; background: #fff0f4; border-radius: 10px; }
+.uninstall-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }
+.workbench-dialog:has(.uninstall-content) { max-width: 560px; }

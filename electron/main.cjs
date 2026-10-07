@@ -15,9 +15,9 @@ const rootDirectory = path.join(app.getPath('appData'), 'Yaya-companion-manager'
 const dataDirectory = path.join(rootDirectory, storageMode === 'sqlite' ? 'sqlite' : storageMode === 'sqlite-test' ? 'sqlite-test' : devUrl ? 'development' : 'local-build')
 app.setPath('userData', dataDirectory)
 let mainWindow
-let sqliteService, dataIPC, migrationManager, desktop, backupManager
+let sqliteService, dataIPC, migrationManager, desktop, backupManager, uninstallIPC
 async function openWindow() {
-  const { win, ready } = createWindow({ devUrl, storageMode, beforeLoad: (window, target) => dataIPC?.attach(window, target) })
+  const { win, ready } = createWindow({ devUrl, storageMode, beforeLoad: (window, target) => { dataIPC?.attach(window, target); uninstallIPC?.attach(window, target) } })
   mainWindow = win
   win.on('closed', () => { mainWindow = null })
   await ready
@@ -51,6 +51,7 @@ else {
       dataIPC = registerDataIPC(daily.wrap(managed,()=>desktop.service.snapshot()), [...BUSINESS_METHODS, ...MIGRATION_METHODS, ...MANAGEMENT_METHODS])
       console.info('SQLite 数据库：', databaseFile)
     }
+    uninstallIPC = require('./uninstall.cjs').registerUninstallIPC({ app, ipcMain: require('electron').ipcMain, whenIdle: () => dataIPC?.whenIdle() ?? Promise.resolve() })
     await openWindow()
     app.on('activate', () => { if (!mainWindow) void openWindow() })
   }).catch(error => { dialog.showErrorBox('应用启动失败', error.message); app.quit() })
@@ -61,5 +62,5 @@ else {
     event.preventDefault()
     void dataIPC.whenIdle().finally(() => { quitting = true; app.quit() })
   })
-  app.on('will-quit', () => { dataIPC?.dispose(); backupManager?.dispose(); migrationManager?.dispose(); (desktop?.service ?? sqliteService)?.close() })
+  app.on('will-quit', () => { uninstallIPC?.dispose(); dataIPC?.dispose(); backupManager?.dispose(); migrationManager?.dispose(); (desktop?.service ?? sqliteService)?.close() })
 }
