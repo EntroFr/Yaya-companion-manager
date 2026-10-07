@@ -1,10 +1,8 @@
 # 丫丫的陪玩日记官网
 
-独立静态官网，采用原生 JavaScript + CSS + Vite，无 React、后端、账号或数据库。部署时只需静态文件；不依赖 Electron。构建工具需要 Node.js 20.19+ / 22.12+（推荐当前 Node.js LTS）和 pnpm。
+独立静态官网：原生 JavaScript + CSS + Vite。没有后端，不依赖 Electron。
 
 ## 本地运行
-
-在仓库根目录打开终端：
 
 ```powershell
 cd website
@@ -12,7 +10,7 @@ pnpm install --ignore-workspace
 pnpm dev
 ```
 
-访问 http://127.0.0.1:5180/，与桌面项目的 5173 端口分开。
+访问 http://127.0.0.1:5180/。本地未配置 GitHub 仓库时，base 为 /，下载仍使用 public/downloads/ 中的本地 ZIP。
 
 ```powershell
 pnpm lint
@@ -20,59 +18,68 @@ pnpm build
 pnpm preview
 ```
 
-构建目录为 `website/dist/`，预览地址 http://127.0.0.1:5181/。无需修改主项目的 package 配置。
+构建输出 website/dist；预览端口 5181。工作流使用 Node.js 24 LTS、pnpm 11.19.0（与现有锁文件生成环境一致），只安装和构建官网。
 
-## 下载配置
+## 当前仓库信息
 
-只编辑 `src/config.js` 中的 `site.download`：
+已核对 origin：https://github.com/EntroFr/Yaya-companion-manager.git。owner 为 EntroFr，repo 为 Yaya-companion-manager。生产构建默认 base 为 /Yaya-companion-manager/，下载使用该仓库的 Releases；开发模式仍保留本地下载。
 
-```js
-download: {
-  url: 'downloads/YayaDiary-1.2.0-Portable.zip',
-  filename: 'YayaDiary-1.2.0-Portable.zip',
-  available: true,
-}
+deployment.js 统一计算 Pages base 和 Release URL。Actions 通过 VITE_GITHUB_REPOSITORY=${{ github.repository }} 使用真实仓库标识；普通项目仓库 base=/仓库名/，owner.github.io 仓库 base=/。
+
+本地准备核对路径时，复制 .env.example 为 .env.local 并填写真实值：
+
+```dotenv
+VITE_GITHUB_REPOSITORY=EntroFr/Yaya-companion-manager
 ```
 
-本轮默认 `available: false`，按钮提示文件待发布，避免链接指向不存在的文件。现有旧 Portable ZIP 未包含最新卸载功能，本轮没有重新打包，也没有把旧包复制到官网。
+.env.local 被忽略，不需要提交。重新运行 pnpm build 后，资源应以 /Yaya-companion-manager/ 开头，下载指向 GitHub Releases。这不需要改动 Electron。
 
-发布前将经过验收的最新 ZIP 放入 `public/downloads/`，再开启 available。ZIP 被官网 .gitignore 排除，不强制纳入 Git。单页的相对路径同时支持域名根目录和子目录部署。
+## GitHub Pages 部署
 
-建议大文件通过 GitHub Releases 提供下载。上传 ZIP 到应用仓库的 Release 后，将 url 改成实际资产地址，例如：
+1. 当前 origin 已配置；提交部署配置后，将当前默认分支推送到 origin。
+2. 仓库 Settings → Pages → Build and deployment → Source 选择 GitHub Actions。
+3. 确认 Actions 已启用；默认分支应为 master 或 main（当前本地为 master）。如使用其他名称，调整 workflow 的 push.branches。
+4. 推送官网修改后，或在 Actions 中手动运行 Deploy website to GitHub Pages。
+5. 等待 build 和 deploy 成功，打开 deploy 输出的 Pages URL。
 
-```js
-url: 'https://github.com/你的账号/你的仓库/releases/download/v1.2.0/YayaDiary-1.2.0-Portable.zip'
+workflow 路径：.github/workflows/website-pages.yml。仅在默认分支的 website/ 或该 workflow 变化时自动部署；也支持 workflow_dispatch。构建步骤只执行 website/ 的 frozen-lockfile 安装、lint、build。上传前明确移除 dist 中的 ZIP，确保 Portable 不进入 Pages artifact。不会安装或构建 Electron，也不会创建 Release 或上传 ZIP。
+
+部署采用 GitHub 官方 Pages artifact 和 OIDC 流程。仅部署 job 获得 pages:write、id-token:write；构建 job 只有 contents:read。Pages 配置需要在 GitHub 网站手动启用。
+
+官网发布到 https://EntroFr.github.io/Yaya-companion-manager/，用户主页仓库使用根目录地址。若以后绑定自定义域名，需要另行配置 base 和域名，不要把默认项目路径直接照搬。
+
+## Release asset 下载
+
+本阶段没有上传任何 ZIP。必须先确保 GitHub 已存在 v1.2.0 tag，再在 Releases → Draft a new release 中选择现有 v1.2.0 tag，不要移动或重建 tag。
+
+将经过验收的 YayaDiary-1.2.0-Portable.zip 作为 asset 手动上传，再 Publish release。文件应保持该名称，大小与 SHA256 建议再次核对。
+
+Actions 构建后的下载目标为：
+
+```text
+https://github.com/EntroFr/Yaya-companion-manager/releases/download/v1.2.0/YayaDiary-1.2.0-Portable.zip
 ```
 
-并设置 available: true。随后重新构建官网。不要把示例账号当作真实链接。
+只有 Release 已发布且文件上传成功，下载才可用。不要上传至 Git 仓库，ZIP 继续被忽略。公开官网供用户下载时，Release asset 也应能匿名访问。
 
-## 图片与内容
+目前 website/public/downloads/ 中的本地 ZIP 仍保留，适用于本地开发下载检查；不会由 Pages workflow 上传。若手动上传 dist 到其他主机，也应排除 ZIP，避免重复分发。
 
-- 品牌头像：`public/brand/avatar.webp`。
-- 教程截图：`public/tutorial/`，建议 960×540，PNG/WebP/JPG。
-- 教程标题、文字、截图文件名集中于 `src/content.js` 的 tutorials。
-- 设置对应步骤 `screenshot: 'add-boss.webp'` 即可替换占位区域；留空继续显示占位。
-- 首页工作台为明确标注的界面示意，不是真实业务截图。
-- 公开截图请使用虚构资料。
+## 更新网站与下载版本
 
-## 公网部署
+- 修改教程、图片或样式并推送默认分支，Actions 自动重新发布；只更改业务程序代码不会触发网站部署。
+- 替换软件版本时，先手动发布新 Release 和对应 ZIP，然后编辑 src/config.js 唯一的 version，例如 1.2.1；网站展示、文件名和 Release URL 会同步变化。
+- 保持 Release tag 为 v版本号、资产名称为 YayaDiary-版本号-Portable.zip。
+- 如果 Release 位于不同仓库，应明确修改下载配置；不要把 Pages 仓库标识误用于其他仓库的下载。
+- 新版本软件本身的构建、tag 和发布是独立工作，不由官网 workflow 执行。
 
-可部署在任意静态主机。上传 dist 文件夹中的全部内容（包括 assets、brand、tutorial、downloads），无需 Node.js 在服务器上常驻。
+## 教程与检查
 
-自动部署平台通常配置：项目根目录 website；安装命令 pnpm install --ignore-workspace；构建命令 pnpm build；发布目录 dist。若平台以仓库根目录执行，则使用 cd website 后再安装和构建，发布目录 website/dist。
+public/tutorial/ 管理截图；content.js 管理步骤和文件名。缺失图片显示占位；已有图片支持放大。首页工作台仍为标注的界面示意。公开截图请使用虚构资料。
 
-GitHub Pages 可将构建产物作为 Pages artifact 发布；当前 base 为 ./，适配仓库子路径。ZIP 建议放 GitHub Releases，避免随静态站点和 Git 仓库分发大文件。
+scripts/check-layout.cjs 使用主项目已有 Electron 做本地隔离检查，不属于 Pages 构建依赖；目前该脚本仍针对本地下载配置，远端 Release 发布后可另行检查真实下载。
 
-尚未执行公开发布；需要实际主机账户、域名或 Pages 配置。发布前务必确认下载文件已存在，或 Releases URL 能正常返回 ZIP。
+## 官方参考
 
-## 本仓库视觉检查
-
-`website/scripts/check-layout.cjs` 使用主项目已有 Electron 作为隔离 Chromium 检查工具（只用于测试，官网本身不依赖 Electron）。启动官网 dev server 后，从仓库根目录运行它，可检查 8 张卡片、16 步教程、下载目标和桌面/手机溢出情况。截图输出到被忽略的 website/.checks/。
-
-## 文案参考
-
-Windows 11 快捷方式步骤参照 Microsoft 官方说明：
-https://support.microsoft.com/en-us/windows/experience/personalization/customize-the-desktop-icons-in-windows
-
-静态构建和部署参考 Vite 官方文档：
-https://vite.dev/guide/static-deploy.html
+- https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+- https://vite.dev/guide/static-deploy.html
+- https://support.microsoft.com/en-us/windows/experience/personalization/customize-the-desktop-icons-in-windows

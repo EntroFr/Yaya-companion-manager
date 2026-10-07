@@ -1,0 +1,66 @@
+name: Deploy website to GitHub Pages
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'website/**'
+      - '.github/workflows/website-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: website-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    env:
+      VITE_GITHUB_REPOSITORY: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.19.0
+          run_install: false
+      - name: Install website dependencies only
+        run: pnpm install --frozen-lockfile --ignore-workspace
+      - name: Lint website
+        run: pnpm lint
+      - name: Build website
+        run: pnpm build
+      - name: Exclude Portable archives from Pages
+        run: |
+          find dist -type f -iname '*.zip' -delete
+          if find dist -type f -iname '*.zip' | grep -q .; then
+            echo 'Pages artifact must not contain ZIP archives.'
+            exit 1
+          fi
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
