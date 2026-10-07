@@ -27,7 +27,7 @@ app.whenReady().then(async () => {
     migration = new MigrationManager(directory, process.env.YAYA_SMOKE_FORMAL_FILE, formal ? 'sqlite' : 'sqlite-test')
     desktop = new DesktopDataService(service,migration)
     const {BackupManager, MANAGEMENT_METHODS,backupName,AutoBackupManager,DailyExportManager}=require('../../.electron-main/sqlite-service.cjs')
-    backupManager=new BackupManager(desktop,process.env.YAYA_SMOKE_FORMAL_FILE,directory,'1.1.2')
+    backupManager=new BackupManager(desktop,process.env.YAYA_SMOKE_FORMAL_FILE,directory,require('../../package.json').version)
     const pickers={showSaveDialog:async()=>({canceled:false,filePath:path.join(directory,'electron-backup.db')}),showOpenDialog:async()=>({canceled:false,filePaths:[path.join(directory,'electron-backup.db')]})}
     const autoRoot=path.join(directory,'auto-check'),mode=formal?'sqlite':'sqlite-test'
     const automatic=new AutoBackupManager(backupManager,autoRoot,mode)

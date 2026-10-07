@@ -12,7 +12,7 @@ export function AppLayout({ children, page }: { children: ReactNode; page: strin
           <a className="nav-link" href="#migration" aria-current={page === 'migration' ? 'page' : undefined}>数据迁移 <span>04</span></a>
           <a className="nav-link" href="#data" aria-current={page === 'data' ? 'page' : undefined}>数据管理 <span>05</span></a>
         </nav>
-        <div className="sidebar-note">本地单用户应用<br />陪玩日记 · 1.1.2</div>
+        <div className="sidebar-note">本地单用户应用<br />陪玩日记 · 1.2.0</div>
       </aside>
       <main id={page} className="main-content">{children}</main>
     </div>
