@@ -162,3 +162,16 @@ dd { margin: 5px 0 0; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .statistics-card { padding: 14px; } .statistics-card dd { font-size: 20px; } }
 .storage-mode-banner { padding: 8px 20px; background: #fce7ef; color: #963356; text-align: center; font-size: 13px; border-bottom: 1px solid #f2cddd; }
 .migration-fingerprint { overflow-wrap: anywhere; font-size: 12px; color: #895d70; } .migration-report { margin-top: 24px; }
+/* 紧凑提示音开关：仅改变外观，保留原生键盘与标签交互。 */
+.sound-setting { position: relative; flex-shrink: 0; }
+.sound-control { display: inline-flex; align-items: center; gap: 8px; height: 32px; position: relative; cursor: pointer; color: var(--muted); font-size: 13px; white-space: nowrap; }
+.sound-icon { width: 17px; height: 17px; }
+.sound-switch-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; opacity: 0; clip-path: inset(50%); }
+.sound-switch-track { display: block; width: 40px; height: 22px; border-radius: 11px; background: #e4dce0; transition: background-color .18s ease; }
+.sound-switch-track::after { content: ''; display: block; width: 18px; height: 18px; margin: 2px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px #493b4226; transition: transform .18s ease; }
+.sound-switch-input:checked + .sound-switch-track { background: var(--accent); }
+.sound-switch-input:checked + .sound-switch-track::after { transform: translateX(18px); }
+.sound-switch-input:focus-visible + .sound-switch-track { outline: 3px solid var(--accent); outline-offset: 3px; }
+.sound-setting-error { position: absolute; top: 100%; right: 0; width: min(260px, 75vw); z-index: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--soft); color: var(--accent); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .sound-switch-track, .sound-switch-track::after { transition: none; } }
+@media (max-width: 640px) { .quick-actions-heading { flex-direction: row; align-items: center; } }

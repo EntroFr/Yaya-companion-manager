@@ -8,11 +8,11 @@ export function remainingServiceSeconds(balanceCents: number, rateCents: number)
   return rateCents > 0 ? Math.max(0, balanceCents / rateCents * 3600) : 0
 }
 // 首次读取只建立基准；暂停时静默更新基准，恢复时不补播暂停期间的跨越。
-export function updateBalanceAlert(previous: BalanceAlertState | null, orderId: string | null, balanceCents: number, rateCents = 3500, status = 'active') {
+export function updateBalanceAlert(previous: BalanceAlertState | null, orderId: string | null, balanceCents: number, rateCents = 3500, status = 'active', soundEnabled = true) {
   if (!orderId) return { state: null, alert: false, warning: false }
   const positive = balanceCents > 0
   const aboveFiveMinutes = remainingServiceSeconds(balanceCents, rateCents) > 300
-  const canAlert = previous?.orderId === orderId && previous.status === 'active' && status === 'active'
+  const canAlert = soundEnabled && previous?.orderId === orderId && previous.status === 'active' && status === 'active'
   return {
     state: { orderId, positive, aboveFiveMinutes, status },
     alert: Boolean(canAlert && previous.positive && !positive),

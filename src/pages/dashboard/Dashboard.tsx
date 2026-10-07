@@ -10,6 +10,7 @@ import { Modal } from '../../components/dialog/Modal'
 import { displayNickname } from '../../features/bosses/bossPresentation'
 import { formatMoney } from '../../utils/money'
 import { bossDetailHash } from '../../app/navigation'
+import { SoundSetting } from '../../features/settings/SoundSetting'
 
 type QuickAction = 'start' | 'recharge' | 'create' | 'tip'
 export function Dashboard({ controller }: { controller: OrderController }) {
@@ -26,7 +27,7 @@ export function Dashboard({ controller }: { controller: OrderController }) {
     <header className="page-header"><div><p className="eyebrow">YAYA’S DIARY</p><h1>日常工作台</h1><p className="muted">开始陪玩、充值和查找老板，都从这里出发。</p></div><span className="status-badge">Yaya的陪玩日记</span></header>
     {notice && <p className="feedback success" role="status">{notice}</p>}
     <section className="panel" aria-labelledby="quick-actions-title">
-      <div className="section-heading"><h2 id="quick-actions-title">快捷操作</h2><span>常用功能，一步进入</span></div>
+      <div className="section-heading quick-actions-heading"><h2 id="quick-actions-title">快捷操作</h2><SoundSetting /></div>
       <div className="quick-actions">
         <button className="quick-action" disabled={controller.loading || busy} onClick={() => open('start')}><strong>开始订单</strong><span>选择老板，确认后开始计时</span></button>
         <button className="quick-action" disabled={controller.loading || busy} onClick={() => open('recharge')}><strong>老板充值</strong><span>充值余额，自动留下流水</span></button>
