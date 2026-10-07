@@ -40,8 +40,15 @@ else {
       migrationManager = new MigrationManager(app.getPath('userData'), formalFile, storageMode, undefined, storageMode === 'sqlite' ? candidate => backupManager.replace(candidate) : undefined)
       desktop = new DesktopDataService(sqliteService,migrationManager)
       backupManager = new BackupManager(desktop,databaseFile,dataDirectory,app.getVersion())
+      const { AutoBackupManager, DailyExportManager } = require('../.electron-main/sqlite-service.cjs')
+      const autoBackup = new AutoBackupManager(backupManager,rootDirectory,storageMode)
+      await autoBackup.run()
       const { managementService } = require('./management.cjs')
-      dataIPC = registerDataIPC(managementService(desktop,backupManager,()=>mainWindow,dataDirectory,storageMode,backupName), [...BUSINESS_METHODS, ...MIGRATION_METHODS, ...MANAGEMENT_METHODS])
+      const daily = new DailyExportManager(rootDirectory,storageMode)
+      await daily.load()
+      if(storageMode==='sqlite') { daily.request(desktop.service.snapshot());await daily.whenIdle() }
+      const managed = managementService(desktop,backupManager,()=>mainWindow,dataDirectory,storageMode,backupName,undefined,autoBackup,daily)
+      dataIPC = registerDataIPC(daily.wrap(managed,()=>desktop.service.snapshot()), [...BUSINESS_METHODS, ...MIGRATION_METHODS, ...MANAGEMENT_METHODS])
       console.info('SQLite 数据库：', databaseFile)
     }
     await openWindow()

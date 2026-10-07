@@ -3,6 +3,8 @@ import type { Order, OrderRepository, PauseRecord } from '../orders/types'
 import type { Tip, TipInput } from '../tips/types'
 import type { MigrationAccess } from '../migration/format'
 export interface DatabaseInfo {
+  dailyExport?: {enabled:boolean;directory:string;lastSuccessAt:string|null;error:string|null}
+  autoBackup?: { enabled: boolean; lastSuccessAt: string | null; directory: string; retention: number; error: string | null }
   name: string; appVersion: string; schemaVersion: number; path: string; size: number
   bosses: number; orders: number; entries: number; tips: number; active: number; paused: number; packaged?: boolean
 }
@@ -15,6 +17,7 @@ export interface ManagementAccess {
   restore(token: string): Promise<DatabaseInfo & { protectedBackup: BackupInfo }>
   cancelRestore(): Promise<void>
   openFolder(): Promise<void>
+  openExports(): Promise<void>
 }
 
 export interface BossProfileRepository {

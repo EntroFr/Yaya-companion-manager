@@ -1,3 +1,4 @@
+import { BalanceHistory } from '../history/BalanceHistory'
 import { dataAccess } from '../data/dataAccess'
 import { RechargeForm } from './RechargeForm'
 import { displayNickname } from '../bosses/bossPresentation'
@@ -78,19 +79,6 @@ export function BossBalance({ boss, onChanged }: { boss: Boss; onChanged: () => 
     </form>}
     {error && <p className="feedback error" role="alert">{error}</p>}
     {notice && <p className="feedback success" role="status">{notice}</p>}
-    <div className="section-heading ledger-heading"><h3>余额流水</h3><span>按时间倒序 · 历史记录不可编辑</span></div>
-    {loading ? <p className="empty-state">正在读取流水…</p> : entries.length === 0 ? <p className="empty-state">暂无余额流水，充值或手动调整后会在这里留下记录。</p> : <div className="table-scroll"><table>
-      <thead><tr><th scope="col">时间 / 流水 ID</th><th scope="col">类型 / 订单 ID</th><th scope="col">金额变化</th><th scope="col">变化前</th><th scope="col">变化后</th><th scope="col">备注</th></tr></thead>
-      <tbody>{entries.map(entry => <tr key={entry.id}>
-        <td>{new Date(entry.createdAt).toLocaleString('zh-CN', { hour12: false })}<small className="ledger-id">{entry.id}</small></td>
-        <td className="nowrap">{labels[entry.type]}{entry.orderId && <small className="ledger-id">{entry.orderId}</small>}</td>
-        <td className={`nowrap ${entry.deltaCents < 0 ? 'danger' : 'amount-positive'}`}>{entry.deltaCents < 0 ? '−' : '+'}{formatMoney(Math.abs(entry.deltaCents))}</td>
-        <td className="nowrap">{formatMoney(entry.beforeCents)}</td><td className="nowrap">{formatMoney(entry.afterCents)}</td>
-        <td className="notes">{entry.notes || '—'}</td>
-      </tr>)}</tbody>
-    </table></div>}
+    {loading ? <p className="empty-state">正在读取流水…</p> : <BalanceHistory entries={entries} title="余额流水"/>}
   </div>
 }
-
-
-

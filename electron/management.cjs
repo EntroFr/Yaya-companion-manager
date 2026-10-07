@@ -1,14 +1,15 @@
 const { dialog, shell, app } = require('electron')
 const path = require('node:path')
 // 文件路径只来自 Main 的原生文件选择窗口，Renderer 仅提交预览令牌。
-function managementService(desktop, manager, window, directory, mode, backupName, pickers = dialog) {
+function managementService(desktop, manager, window, directory, mode, backupName, pickers = dialog, autoBackup, daily) {
   return {
     get lastChanged() { return desktop.lastChanged },
     async execute(method, args) {
       if (!method.startsWith('management.')) return desktop.execute(method,args)
       desktop.lastChanged = false
       if (mode !== 'sqlite') throw new Error('备份与恢复仅在 SQLite 正式模式可用。')
-      if (method === 'management.info') return { ...manager.info(), packaged:app.isPackaged }
+      if (method === 'management.info') return { ...manager.info(), packaged:app.isPackaged, autoBackup:autoBackup?.info(), dailyExport:daily?.info() }
+      if (method === 'management.openExports') { if(!daily) throw new Error('日报功能不可用。'); require('node:fs').mkdirSync(daily.directory,{recursive:true});const error=await shell.openPath(daily.directory);if(error)throw new Error('无法打开导出目录：'+error);return }
       if (method === 'management.openFolder') { const error=await shell.openPath(directory); if(error) throw new Error('无法打开数据文件夹：'+error); return }
       if (method === 'management.backup') {
         const selected = await pickers.showSaveDialog(window(),{ title:'备份数据', defaultPath:path.join(app.getPath('documents'),backupName()), filters:[{name:'陪玩日记数据库备份',extensions:['db']}] })

@@ -48,6 +48,7 @@ export function createLocalStorageDataAccess(options: { storage?: () => AppStora
     } },
     development: { clear: () => clearTestData(storage(), lock) },
     management: {
+      openExports: async () => { throw new Error('请在 Electron SQLite 正式模式打开导出目录。') },
       info: async () => { throw new Error('请在 Electron SQLite 正式模式使用数据管理。') },
       backup: async () => { throw new Error('请在 Electron SQLite 正式模式备份。') },
       inspectRestore: async () => { throw new Error('请在 Electron SQLite 正式模式恢复。') },

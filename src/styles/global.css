@@ -175,3 +175,9 @@ dd { margin: 5px 0 0; overflow-wrap: anywhere; }
 .sound-setting-error { position: absolute; top: 100%; right: 0; width: min(260px, 75vw); z-index: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--soft); color: var(--accent); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { .sound-switch-track, .sound-switch-track::after { transition: none; } }
 @media (max-width: 640px) { .quick-actions-heading { flex-direction: row; align-items: center; } }
+.history-date { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.history-date input { width: 155px; margin: 0; padding: 6px 9px; }
+.history-table { min-width: 940px; }
+.history-table th, .history-table td { white-space: nowrap; padding: 10px 12px; }
+.history-table td.notes { white-space: normal; min-width: 180px; max-width: 320px; }
+.history-toggle { margin-top: 12px; }

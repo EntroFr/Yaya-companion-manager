@@ -6,7 +6,7 @@ import { SQLiteService } from './service.ts'
 import { migrations } from './schema.ts'
 import { normalizeStore } from '../../src/features/migration/format.ts'
 
-export const MANAGEMENT_METHODS = ['management.info', 'management.backup', 'management.inspectRestore', 'management.restore', 'management.cancelRestore', 'management.openFolder']
+export const MANAGEMENT_METHODS = ['management.info', 'management.backup', 'management.inspectRestore', 'management.restore', 'management.cancelRestore', 'management.openFolder', 'management.openExports']
 export interface DatabaseInfo {
   name: string; appVersion: string; schemaVersion: number; path: string; size: number
   bosses: number; orders: number; entries: number; tips: number; active: number; paused: number

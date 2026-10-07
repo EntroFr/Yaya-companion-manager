@@ -12,7 +12,7 @@ if (mode !== 'local-storage') {
     tips: ['list', 'create', 'update', 'remove'],
     history: ['read'], statistics: ['read'], development: ['clear'],
     migration: ['status', 'exportData', 'prepare', 'activate', 'discard'],
-    management: ['info', 'backup', 'inspectRestore', 'restore', 'cancelRestore', 'openFolder'],
+    management: ['info', 'backup', 'inspectRestore', 'restore', 'cancelRestore', 'openFolder', 'openExports'],
   }
   api.repositories = {}
   for (const [group, names] of Object.entries(methods)) {

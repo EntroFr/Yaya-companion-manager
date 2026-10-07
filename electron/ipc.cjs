@@ -21,7 +21,7 @@ function registerDataIPC(service, methods) {
     })
   }
   return {
-    whenIdle() { return queue },
+    whenIdle() { return queue.then(() => service.whenIdle?.()) },
     attach(win, target) {
       for (const existing of clients) if (existing.contents === win.webContents) clients.delete(existing)
       const base = new URL(target)
