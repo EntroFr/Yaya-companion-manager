@@ -1,0 +1,1 @@
+{"name":"yaya-diary-website","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"vite --host 127.0.0.1 --port 5180 --strictPort","lint":"oxlint src scripts","build":"vite build","preview":"vite preview --host 127.0.0.1 --port 5181"},"devDependencies":{"vite":"8.3.2","oxlint":"1.81.0"}}
