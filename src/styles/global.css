@@ -186,3 +186,9 @@ dd { margin: 5px 0 0; overflow-wrap: anywhere; }
 .uninstall-warning { font-size: 13px; line-height: 1.65; color: #b42b48; padding: 12px; background: #fff0f4; border-radius: 10px; }
 .uninstall-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }
 .workbench-dialog:has(.uninstall-content) { max-width: 560px; }
+
+.test-mode-badge { display:inline-block; margin-left:8px; padding:2px 7px; border-radius:6px; background:#f8edf2; color:#987582; font-size:11px; font-weight:normal; vertical-align:middle; }
+.test-mode-setting p { font-size:12px; margin:8px 0; }
+.sound-switch-input:disabled + .sound-switch-track { opacity:.55; }
+
+.form-grid .test-mode-setting .sound-control { display:inline-flex; }

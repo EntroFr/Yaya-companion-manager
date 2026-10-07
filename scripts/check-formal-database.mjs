@@ -12,7 +12,7 @@ try {
   const foreignKeys = db.prepare('PRAGMA foreign_key_check').all()
   if(foreignKeys.length)throw Error('正式库外键检查失败。')
   const schemaVersion = db.prepare('SELECT max(version) AS version FROM schema_migrations').get().version
-  if(schemaVersion!==4)throw Error(`数据库版本 ${schemaVersion} 与当前1.2.0不一致。`)
+  if(schemaVersion!==5)throw Error(`数据库版本 ${schemaVersion} 与当前 schema 5 不一致。`)
   const counts = {}
   for(const table of ['boss_profiles','orders','balance_entries','tips'])counts[table]=db.prepare(`SELECT count(*) AS count FROM ${table}`).get().count
   db.exec('ROLLBACK')

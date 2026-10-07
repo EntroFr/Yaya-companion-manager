@@ -1,3 +1,4 @@
+import { formalData } from '../../src/features/data/formalData.ts'
 import ExcelJS from 'exceljs'
 import { mkdir, rename, unlink, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -14,6 +15,7 @@ export function dailyRange(date:string,now:number) {
   return {start:start.getTime(),end:Math.min(next.getTime()-1,now)}
 }
 export function buildDailyWorkbook(data:HistoryData,date:string,now:number) {
+  data = formalData(data)
   const range=dailyRange(date,now),stats=calculateStatistics(data,range),book=new ExcelJS.Workbook()
   const orders=data.orders.filter(o=>serviceIntervals(o,range.end).some(i=>i.end>range.start&&i.start<=range.end)||(o.endedAt!==null&&o.endedAt>=range.start&&o.endedAt<=range.end)||(o.startedAt>=range.start&&o.startedAt<=range.end))
   const within=(s:string)=>Date.parse(s)>=range.start&&Date.parse(s)<=range.end

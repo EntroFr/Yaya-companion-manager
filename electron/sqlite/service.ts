@@ -10,6 +10,8 @@ import type { Order, PauseRecord } from '../../src/features/orders/types'
 import type { Tip, TipInput } from '../../src/features/tips/types'
 import type { AppStore } from '../../src/features/storage/appStore'
 
+function changesMode(value: unknown): boolean | undefined { return (value as BossChanges).isTestMode }
+function inputMode(value: boolean | undefined, current: boolean | undefined) { return (value ?? current ?? false) ? 1 : 0 }
 type Row = Record<string, string | number | bigint | null | Uint8Array>
 const iso = (value: unknown) => new Date(Number(value)).toISOString()
 const nullableNumber = (value: unknown) => value === null ? null : Number(value)
@@ -22,14 +24,14 @@ function safeInteger(value: number) {
   return value
 }
 export const BUSINESS_METHODS = [
-  'bosses.list', 'bosses.create', 'bosses.update', 'bosses.remove',
+  'bosses.modeLocked', 'bosses.list', 'bosses.create', 'bosses.update', 'bosses.remove', 'testing.clear',
   'balances.entries', 'balances.changeBalance', 'balances.clearDebt',
   'orders.list', 'orders.start', 'orders.settle', 'orders.pause', 'orders.resume', 'orders.complete',
   'pauses.list', 'pauses.pause', 'pauses.resume',
   'tips.list', 'tips.create', 'tips.update', 'tips.remove', 'history.read', 'statistics.read', 'development.clear',
 ] as const
 export type BusinessMethod = typeof BUSINESS_METHODS[number]
-const READ_METHODS = new Set(['bosses.list', 'balances.entries', 'orders.list', 'orders.settle', 'pauses.list', 'tips.list', 'history.read', 'statistics.read'])
+const READ_METHODS = new Set(['bosses.modeLocked', 'bosses.list', 'balances.entries', 'orders.list', 'orders.settle', 'pauses.list', 'tips.list', 'history.read', 'statistics.read'])
 
 // SQL 仅在 Main 中执行。事务内无 await，读取结算状态至提交期间不会交错。
 export class SQLiteService {
@@ -68,8 +70,11 @@ export class SQLiteService {
       return result
     } catch (error) { this.database.exec('ROLLBACK'); throw error }
   }
+  private testFlag(row: Row): { isTestMode?: boolean } {
+    return this.get('SELECT is_test_mode FROM boss_identities WHERE profile_id = ?', String(row.profile_id))?.is_test_mode === 1 ? { isTestMode: true } : {}
+  }
   private mapBoss(row: Row): Boss {
-    return { profileId: String(row.profile_id), id: String(row.boss_id), nickname: String(row.nickname), hourlyRateCents: Number(row.hourly_rate_cents), balanceCents: Number(row.balance_cents), createdAt: iso(row.created_at), notes: String(row.notes) }
+    return { ...this.testFlag(row), profileId: String(row.profile_id), id: String(row.boss_id), nickname: String(row.nickname), hourlyRateCents: Number(row.hourly_rate_cents), balanceCents: Number(row.balance_cents), createdAt: iso(row.created_at), notes: String(row.notes) }
   }
   private boss(id: string): Boss {
     const row = this.get('SELECT * FROM boss_profiles WHERE boss_id = ?', id)
@@ -80,7 +85,7 @@ export class SQLiteService {
     return this.all('SELECT * FROM order_pauses WHERE order_id = ? ORDER BY sequence', id).map(p => ({ startedAt: Number(p.started_at), endedAt: nullableNumber(p.ended_at) }))
   }
   private mapOrder(row: Row): Order {
-    return { id: String(row.order_id), profileId: String(row.profile_id), bossId: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), hourlyRateCentsSnapshot: Number(row.hourly_rate_cents_snapshot), startedAt: Number(row.started_at), endedAt: nullableNumber(row.ended_at), status: row.status as Order['status'], accumulatedMs: Number(row.accumulated_ms), pauses: this.pauses(String(row.order_id)), settledServiceSeconds: Number(row.settled_service_seconds), settledAmountCents: Number(row.settled_amount_cents), finalChargeCents: nullableNumber(row.final_charge_cents), balanceAtEndCents: nullableNumber(row.balance_at_end_cents), endReason: row.end_reason === null ? null : String(row.end_reason), createdAt: Number(row.created_at), ...(row.billing_model === 'on-completion' ? { billingModel: 'on-completion' as const } : {}), ...(row.legacy_unbilled === 1 ? { legacyUnbilled: true } : {}) }
+    return { ...this.testFlag(row), id: String(row.order_id), profileId: String(row.profile_id), bossId: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), hourlyRateCentsSnapshot: Number(row.hourly_rate_cents_snapshot), startedAt: Number(row.started_at), endedAt: nullableNumber(row.ended_at), status: row.status as Order['status'], accumulatedMs: Number(row.accumulated_ms), pauses: this.pauses(String(row.order_id)), settledServiceSeconds: Number(row.settled_service_seconds), settledAmountCents: Number(row.settled_amount_cents), finalChargeCents: nullableNumber(row.final_charge_cents), balanceAtEndCents: nullableNumber(row.balance_at_end_cents), endReason: row.end_reason === null ? null : String(row.end_reason), createdAt: Number(row.created_at), ...(row.billing_model === 'on-completion' ? { billingModel: 'on-completion' as const } : {}), ...(row.legacy_unbilled === 1 ? { legacyUnbilled: true } : {}) }
   }
   private order(id: string): Order {
     const row = this.get('SELECT * FROM orders WHERE order_id = ?', id)
@@ -89,10 +94,10 @@ export class SQLiteService {
   }
   private listOrders() { return this.all('SELECT * FROM orders ORDER BY started_at DESC, rowid DESC').map(row => this.mapOrder(row)) }
   private entries(profileId?: string, insertionOrder = false): BalanceEntry[] {
-    return this.all(`SELECT * FROM balance_entries ${profileId ? 'WHERE profile_id = ?' : ''} ORDER BY ${insertionOrder ? 'rowid' : 'created_at DESC, rowid DESC'}`, ...(profileId ? [profileId] : [])).map(row => ({ id: String(row.entry_id), profileId: String(row.profile_id), bossId: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), ...(row.order_id === null ? {} : { orderId: String(row.order_id), settledThroughSeconds: Number(row.settled_through_seconds) }), type: row.type as BalanceEntry['type'], deltaCents: Number(row.delta_cents), beforeCents: Number(row.before_cents), afterCents: Number(row.after_cents), createdAt: iso(row.created_at), notes: String(row.notes) }))
+    return this.all(`SELECT * FROM balance_entries ${profileId ? 'WHERE profile_id = ?' : ''} ORDER BY ${insertionOrder ? 'rowid' : 'created_at DESC, rowid DESC'}`, ...(profileId ? [profileId] : [])).map(row => ({ ...this.testFlag(row), id: String(row.entry_id), profileId: String(row.profile_id), bossId: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), ...(row.order_id === null ? {} : { orderId: String(row.order_id), settledThroughSeconds: Number(row.settled_through_seconds) }), type: row.type as BalanceEntry['type'], deltaCents: Number(row.delta_cents), beforeCents: Number(row.before_cents), afterCents: Number(row.after_cents), createdAt: iso(row.created_at), notes: String(row.notes) }))
   }
   private mapTip(row: Row): Tip {
-    return { id: String(row.tip_id), profileId: String(row.profile_id), bossIdSnapshot: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), amountCents: Number(row.amount_cents), receivedAt: iso(row.received_at), notes: String(row.notes), createdAt: iso(row.created_at), updatedAt: iso(row.updated_at) }
+    return { ...this.testFlag(row), id: String(row.tip_id), profileId: String(row.profile_id), bossIdSnapshot: String(row.boss_id_snapshot), nicknameSnapshot: String(row.nickname_snapshot), amountCents: Number(row.amount_cents), receivedAt: iso(row.received_at), notes: String(row.notes), createdAt: iso(row.created_at), updatedAt: iso(row.updated_at) }
   }
   private tips(profileId?: string) { return this.all(`SELECT * FROM tips ${profileId ? 'WHERE profile_id = ?' : ''} ORDER BY received_at DESC, rowid DESC`, ...(profileId ? [profileId] : [])).map(row => this.mapTip(row)) }
   private post(boss: Boss, type: BalanceEntry['type'], delta: number, notes: string, now: number, order?: Order, through?: number) {
@@ -146,6 +151,7 @@ export class SQLiteService {
   }
   private dispatch(method: BusinessMethod, args: unknown[]): unknown {
     switch (method) {
+      case 'bosses.modeLocked': return this.get('SELECT mode_locked FROM boss_identities WHERE profile_id = ?', this.boss(identifier(args[0])).profileId!)!.mode_locked === 1
       case 'bosses.list': return this.all('SELECT * FROM boss_profiles ORDER BY rowid').map(row => this.mapBoss(row))
       case 'bosses.create': {
         const input = args[0] as BossInput
@@ -153,12 +159,15 @@ export class SQLiteService {
         const id = input.id.trim(), fields = validateBossFields(input)
         if (this.get('SELECT 1 FROM boss_profiles WHERE boss_id = ?', id)) throw new Error(`老板 ID「${id}」已存在，请使用其他 ID。`)
         const profileId = randomUUID(), now = this.now()
-        this.run('INSERT INTO boss_identities VALUES (?, ?, ?)', profileId, id, now)
+        this.run('INSERT INTO boss_identities (profile_id,original_boss_id,created_at,is_test_mode) VALUES (?, ?, ?, ?)', profileId, id, now, fields.isTestMode ? 1 : 0)
         this.run('INSERT INTO boss_profiles VALUES (?, ?, ?, ?, 0, ?, ?)', profileId, id, fields.nickname, fields.hourlyRateCents, now, fields.notes)
         return this.boss(id)
       }
       case 'bosses.update': {
         const boss = this.boss(identifier(args[0])), fields = validateBossFields(args[1] as BossChanges)
+        const requestedMode = inputMode(changesMode(args[1]), boss.isTestMode)
+        if (requestedMode !== (boss.isTestMode ? 1 : 0) && this.get('SELECT mode_locked FROM boss_identities WHERE profile_id = ?', boss.profileId!)!.mode_locked === 1) throw new Error('该老板已经产生业务记录，无法再切换测试模式。')
+        this.run('UPDATE boss_identities SET is_test_mode = ? WHERE profile_id = ?', requestedMode, boss.profileId!)
         this.run('UPDATE boss_profiles SET nickname = ?, hourly_rate_cents = ?, notes = ? WHERE profile_id = ?', fields.nickname, fields.hourlyRateCents, fields.notes, boss.profileId!)
         return this.boss(boss.id)
       }
@@ -215,6 +224,18 @@ export class SQLiteService {
         this.run('DELETE FROM tips WHERE tip_id = ?', id); return
       }
       case 'history.read': case 'statistics.read': return { orders: this.listOrders(), entries: this.entries(), tips: this.tips() }
+      case 'testing.clear': {
+        const identities = 'SELECT profile_id FROM boss_identities WHERE is_test_mode = 1'
+        this.database.exec(`
+          DELETE FROM balance_entries WHERE profile_id IN (${identities});
+          DELETE FROM order_pauses WHERE order_id IN (SELECT order_id FROM orders WHERE profile_id IN (${identities}));
+          DELETE FROM orders WHERE profile_id IN (${identities});
+          DELETE FROM tips WHERE profile_id IN (${identities});
+          DELETE FROM boss_profiles WHERE profile_id IN (${identities});
+          DELETE FROM boss_identities WHERE is_test_mode = 1;
+        `)
+        return
+      }
       case 'development.clear': {
         // 保留 schema，不删除数据库文件，不触碰 localStorage。
         this.database.exec('DELETE FROM balance_entries; DELETE FROM tips; DELETE FROM order_pauses; DELETE FROM orders; DELETE FROM boss_profiles; DELETE FROM boss_identities; DELETE FROM import_batches;')

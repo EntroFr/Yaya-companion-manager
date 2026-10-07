@@ -76,6 +76,14 @@ export function normalizeStore(value: AppStore, now: number): AppStore {
       register(tip.profileId, tip.bossIdSnapshot)
       Object.assign(tip, { createdAt: new Date(tip.createdAt).toISOString() }); tip.updatedAt = new Date(tip.updatedAt).toISOString(); tip.receivedAt = new Date(tip.receivedAt).toISOString()
     }
+    const modes = new Map<string, boolean>()
+    for (const record of [...store.bosses, ...store.orders, ...store.entries, ...store.tips]) {
+      if (record.isTestMode !== undefined && typeof record.isTestMode !== 'boolean') throw new Error('测试模式标记无效')
+      const key = record.profileId!, mode = !!record.isTestMode
+      if (modes.has(key) && modes.get(key) !== mode) throw new Error('同一身份的测试模式标记不一致')
+      modes.set(key, mode)
+      if (record.isTestMode === false) delete record.isTestMode
+    }
     validateStore(store)
     return store
   } catch (error) { throw new Error(`迁移校验失败：${error instanceof Error && error.message ? error.message : '资料、订单、金额、时间或余额流水链不一致'}。原数据未更改。`) }

@@ -16,7 +16,7 @@ export class LocalStorageTipRepository implements TipRepository {
     const boss = store.bosses.find(b => profileKey(b) === profileId)
     if (!boss) throw new Error('该老板资料已删除或已变更，不能新增打赏，请重新选择老板。')
     const now = new Date().toISOString()
-    const tip: Tip = { id: crypto.randomUUID(), profileId, bossIdSnapshot: boss.id, nicknameSnapshot: boss.nickname, ...fields, createdAt: now, updatedAt: now }
+    const tip: Tip = { id: crypto.randomUUID(), profileId, bossIdSnapshot: boss.id, ...(boss.isTestMode ? { isTestMode: true } : {}), nicknameSnapshot: boss.nickname, ...fields, createdAt: now, updatedAt: now }
     store.tips.push(tip); writeStore(this.storage(), store); return tip
   }) }
   update(id: string, input: TipInput) { return this.lock(async () => {

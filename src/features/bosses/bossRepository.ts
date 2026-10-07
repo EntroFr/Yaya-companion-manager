@@ -10,6 +10,11 @@ export class LocalStorageBossRepository implements BossRepository {
   private readonly storage: () => AppStorage
   private readonly lock: MutationLock
   constructor(storage: () => AppStorage = () => window.localStorage, lock: MutationLock = dataLock) { this.storage = storage; this.lock = lock }
+  modeLocked(id: string) { return this.lock(async () => {
+    const store = readStore(this.storage()), boss = store.bosses.find(b => b.id === id)
+    if (!boss) throw new Error('老板不存在。')
+    return [...store.orders, ...store.entries, ...store.tips].some(r => r.profileId === profileKey(boss))
+  }) }
   async list() { return this.lock(async () => readStore(this.storage()).bosses) }
   create(input: BossInput) { return this.lock(async () => {
     const id = input.id.trim()
@@ -22,7 +27,10 @@ export class LocalStorageBossRepository implements BossRepository {
   update(id: string, changes: BossChanges) { return this.lock(async () => {
     const store = readStore(this.storage()), index = store.bosses.findIndex(b => b.id === id)
     if (index < 0) throw new Error('该老板已不存在，请刷新列表。')
-    const boss = { ...store.bosses[index], ...validateFields(changes) }
+    const previous = store.bosses[index], mode = changes.isTestMode ?? previous.isTestMode ?? false
+    if (mode !== !!previous.isTestMode && [...store.orders, ...store.entries, ...store.tips].some(r => (r.profileId ?? ('bossId' in r ? recordProfileKey(r) : '')) === profileKey(previous))) throw new Error('该老板已经产生业务记录，无法再切换测试模式。')
+    const boss = { ...previous, ...validateFields(changes) }
+    if (mode) boss.isTestMode = true; else delete boss.isTestMode
     store.bosses[index] = boss; writeStore(this.storage(), store); return boss
   }) }
   remove(id: string) { return this.lock(async () => {
@@ -45,7 +53,7 @@ export class LocalStorageBossRepository implements BossRepository {
     // 手动扣除沿用余额不足拦截；订单消费独立允许负数。
     if (input.type === 'manual_deduct' && afterCents < 0) throw new Error('余额不足，手动扣除金额不能超过当前余额。')
     if (!isInteger(afterCents)) throw new Error('余额超出安全金额范围，无法保存。')
-    const entry: BalanceEntry = { id: crypto.randomUUID(), bossId, profileId: profileKey(boss), nicknameSnapshot: boss.nickname, type: input.type, deltaCents, beforeCents: boss.balanceCents, afterCents, createdAt: new Date().toISOString(), notes: input.notes.trim() }
+    const entry: BalanceEntry = { id: crypto.randomUUID(), bossId, profileId: profileKey(boss), ...(boss.isTestMode ? { isTestMode: true } : {}), nicknameSnapshot: boss.nickname, type: input.type, deltaCents, beforeCents: boss.balanceCents, afterCents, createdAt: new Date().toISOString(), notes: input.notes.trim() }
     const updated = { ...boss, balanceCents: afterCents }
     store.bosses = store.bosses.map(b => b.id === bossId ? updated : b); store.entries.push(entry)
     writeStore(this.storage(), store); return updated
@@ -54,7 +62,7 @@ export class LocalStorageBossRepository implements BossRepository {
     const store = readStore(this.storage()), boss = store.bosses.find(b => b.id === bossId)
     if (!boss) throw new Error('该老板已不存在，请刷新列表。')
     if (boss.balanceCents >= 0) throw new Error('当前余额不为负数，无需清零。')
-    store.entries.push({ id: crypto.randomUUID(), bossId, profileId: profileKey(boss), nicknameSnapshot: boss.nickname, type: 'debt_clear', deltaCents: -boss.balanceCents, beforeCents: boss.balanceCents, afterCents: 0, createdAt: new Date().toISOString(), notes })
+    store.entries.push({ id: crypto.randomUUID(), bossId, profileId: profileKey(boss), ...(boss.isTestMode ? { isTestMode: true } : {}), nicknameSnapshot: boss.nickname, type: 'debt_clear', deltaCents: -boss.balanceCents, beforeCents: boss.balanceCents, afterCents: 0, createdAt: new Date().toISOString(), notes })
     const updated = { ...boss, balanceCents: 0 }
     store.bosses = store.bosses.map(b => b.id === bossId ? updated : b)
     writeStore(this.storage(), store); return updated

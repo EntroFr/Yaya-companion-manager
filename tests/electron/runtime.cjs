@@ -109,7 +109,7 @@ app.whenReady().then(async () => {
     if(!restored.ok || !fs.existsSync(restored.value.protectedBackup.path))throw new Error(restored.message||'Electron恢复保护失败')
     service=desktop.service
     await win.loadFile(path.resolve('dist/index.html'),{hash:'data'})
-    await waitFor(win,"document.body.textContent.includes('数据库版本 4')")
+    await waitFor(win,"document.body.textContent.includes('数据库版本 5')")
     fs.writeFileSync(path.resolve('.electron-smoke/data-management.png'),(await win.webContents.capturePage()).toPNG())
     await waitFor(win,"document.body.textContent.includes('每日 Excel：已开启') && document.body.textContent.includes('自动备份：已开启')")
     const call=async(group,method,...args)=>{const r=await win.webContents.executeJavaScript(`window.yayaDesktop.repositories.${group}.${method}(...${JSON.stringify(args)})`);if(!r.ok)throw Error(r.message);return r.value}

@@ -3,13 +3,13 @@ download-page.png（步骤1 下载软件）
 portable-folder.png（步骤2 解压）
 dashboard.png（步骤3 启动）
 add-boss.png（步骤5 添加老板）
-recharge.png（步骤6 充值）
-active-order.png（步骤7 开始订单）
-history.png（步骤12 历史）
-statistics.png（步骤13 统计）
-data-management.png（步骤14 Excel、步骤15 备份共用）
-active-order.png（步骤7、8、9、10 共用）
-tip.png（步骤11 打赏）
+recharge.png（步骤7 充值）
+active-order.png（步骤8 开始订单）
+history.png（步骤13 历史）
+statistics.png（步骤14 统计）
+data-management.png（步骤15 Excel、步骤16 备份共用）
+active-order.png（步骤8、9、10、11 共用）
+tip.png（步骤12 打赏）
 uninstall.png（保留资源，不接入官网教程）
 
 已有 download-page.png 为官网实际截图；dashboard、add-boss、recharge、active-order、history、statistics、data-management、tip、uninstall 已由隔离 Electron + 临时 SQLite 演示环境自动截图（1920×1080）。portable-folder.png 尚缺，需要真实文件资源管理器截图。数据管理图的临时路径已隐藏；卸载图仅停在确认页，未执行卸载。
@@ -35,3 +35,5 @@ tip.png：记录打赏弹窗，展示 YAYA-01 丫丫、虚构金额20.00、发�
 uninstall.png 保留，但官网教程不再提供卸载步骤。
 
 建议所有新截图为1920×1080或960×540，保持文字清晰；尽量截完整窗口，弹窗连同必要背景一起截。不要裁掉操作按钮、警告或重要金额。组件使用等比容纳，非16:9图片也不会被拉伸或裁切关键内容。
+
+test-mode.png（步骤6 测试模式）：隔离临时SQLite演示环境，新增老板弹窗开启测试模式，示例YAYA-01 丫丫。

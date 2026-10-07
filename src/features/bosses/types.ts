@@ -1,4 +1,5 @@
 export interface Boss {
+  isTestMode?: boolean
   readonly profileId?: string
   readonly id: string
   nickname: string
@@ -7,10 +8,11 @@ export interface Boss {
   readonly createdAt: string
   notes: string
 }
-export type BossInput = Pick<Boss, 'id' | 'nickname' | 'hourlyRateCents' | 'notes'>
+export type BossInput = Pick<Boss, 'id' | 'nickname' | 'hourlyRateCents' | 'notes' | 'isTestMode'>
 export type BossChanges = Omit<BossInput, 'id'>
 export type BalanceType = 'recharge' | 'manual_add' | 'manual_deduct' | 'order_consumption' | 'debt_clear'
 export interface BalanceEntry {
+  isTestMode?: boolean
   readonly id: string
   readonly profileId?: string
   readonly nicknameSnapshot?: string
@@ -30,6 +32,7 @@ export interface BalanceInput {
   notes: string
 }
 export interface BossRepository {
+  modeLocked(id: string): Promise<boolean>
   list(): Promise<Boss[]>
   create(input: BossInput): Promise<Boss>
   update(id: string, changes: BossChanges): Promise<Boss>

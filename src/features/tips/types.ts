@@ -1,4 +1,5 @@
 export interface Tip {
+  isTestMode?: boolean
   readonly id: string
   readonly profileId: string
   readonly bossIdSnapshot: string

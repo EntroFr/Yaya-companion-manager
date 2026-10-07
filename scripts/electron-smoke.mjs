@@ -33,3 +33,8 @@ await new Promise((resolve,reject)=>{
   const child=spawn(require('electron'),['tests/electron/uninstall-runtime.cjs'],{stdio:'inherit',env})
   child.once('error',reject);child.once('exit',code=>code===0?resolve():reject(new Error(`Electron 卸载隔离检查失败：${code}`)))
 })
+
+await new Promise((resolve,reject)=>{
+  const child=spawn(require('electron'),['tests/electron/test-mode-runtime.cjs'],{stdio:'inherit',env})
+  child.once('error',reject);child.once('exit',code=>code===0?resolve():reject(new Error(`Electron 测试模式隔离检查失败：${code}`)))
+})

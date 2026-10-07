@@ -1,6 +1,7 @@
 export type OrderStatus = 'active' | 'paused' | 'completed'
 export interface PauseRecord { startedAt: number; endedAt: number | null }
 export interface Order {
+  isTestMode?: boolean
   readonly id: string
   readonly profileId?: string
   readonly bossId: string

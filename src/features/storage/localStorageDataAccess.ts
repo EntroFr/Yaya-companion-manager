@@ -2,7 +2,7 @@ import { LocalStorageBossRepository } from '../bosses/bossRepository.ts'
 import { LocalStorageOrderRepository } from '../orders/orderRepository.ts'
 import { LocalStorageTipRepository } from '../tips/tipRepository.ts'
 import type { DataAccess, HistoryRepository, StatisticsDataRepository } from '../data/contracts'
-import { readStore, APP_STORAGE_KEY, LEGACY_ACCOUNTS_KEY, LEGACY_BOSSES_KEY, DATA_CHANGED_EVENT } from './appStore.ts'
+import { readStore, writeStore, profileKey, recordProfileKey, APP_STORAGE_KEY, LEGACY_ACCOUNTS_KEY, LEGACY_BOSSES_KEY, DATA_CHANGED_EVENT } from './appStore.ts'
 import type { AppStorage } from './appStore'
 import { ORDER_STORAGE_KEY } from '../orders/orderStorage.ts'
 import { dataLock } from './dataLock.ts'
@@ -46,6 +46,15 @@ export function createLocalStorageDataAccess(options: { storage?: () => AppStora
       window.addEventListener(DATA_CHANGED_EVENT, listener); window.addEventListener('storage', changed)
       return () => { window.removeEventListener(DATA_CHANGED_EVENT, listener); window.removeEventListener('storage', changed) }
     } },
+    testing: { clear: () => lock(async () => {
+      const store = readStore(storage())
+      const ids = new Set([...store.bosses, ...store.orders, ...store.entries, ...store.tips].filter(r => r.isTestMode).map(r => 'id' in r && 'balanceCents' in r ? profileKey(r) : (r.profileId ?? ('bossId' in r ? recordProfileKey(r) : ''))))
+      store.bosses = store.bosses.filter(b => !ids.has(profileKey(b)))
+      store.orders = store.orders.filter(r => !ids.has((r.profileId ?? ('bossId' in r ? recordProfileKey(r) : ''))))
+      store.entries = store.entries.filter(r => !ids.has((r.profileId ?? ('bossId' in r ? recordProfileKey(r) : ''))))
+      store.tips = store.tips.filter(r => !ids.has(r.profileId))
+      writeStore(storage(), store)
+    }) },
     development: { clear: () => clearTestData(storage(), lock) },
     management: {
       openExports: async () => { throw new Error('请在 Electron SQLite 正式模式打开导出目录。') },

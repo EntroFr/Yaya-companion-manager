@@ -34,7 +34,7 @@ test('1.0.0备份在临时副本升级恢复，原备份与已扣进度保留',a
   const dir=mkdtempSync(join(tmpdir(),'yaya-restore-upgrade-')),old=join(dir,'backup-1.0.0.db'),file=join(dir,'formal.db');createLegacyDatabase(old,'paused')
   const {openFormalDatabase}=await import('../electron/sqlite/migration.ts');const session={service:openFormalDatabase(file,true)},manager=new BackupManager(session,file,dir,'1.1.0')
   t.after(()=>{manager.dispose();session.service.close();rmSync(dir,{recursive:true,force:true})})
-  const preview=await manager.inspect(old);assert.equal(preview.schemaVersion,4);await manager.restore(preview.token)
+  const preview=await manager.inspect(old);assert.equal(preview.schemaVersion,5);await manager.restore(preview.token)
   assert.equal(session.service.snapshot().orders[0].settledAmountCents,875);session.service.execute('orders.settle');assert.equal(session.service.snapshot().entries.length,2)
   const original=new DatabaseSync(old,{readOnly:true});assert.equal(original.prepare('SELECT max(version) AS n FROM schema_migrations').get()!.n,3);original.close()
 })

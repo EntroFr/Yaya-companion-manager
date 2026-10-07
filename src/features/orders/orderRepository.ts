@@ -17,7 +17,7 @@ function settleThrough(store: AppStore, order: Order, seconds: number, now: numb
     const delta = cumulative - order.settledAmountCents
     const after = boss!.balanceCents - delta
     if (!isInteger(after)) throw new Error('余额超出安全金额范围，未执行扣费。')
-    store.entries.push({ id: crypto.randomUUID(), bossId: boss!.id, profileId: profileKey(boss!), nicknameSnapshot: order.nicknameSnapshot, orderId: order.id, type: 'order_consumption', deltaCents: -delta, beforeCents: boss!.balanceCents, afterCents: after, createdAt: new Date(now).toISOString(), notes: `订单 ${order.id}，${note}`, settledThroughSeconds: through })
+    store.entries.push({ id: crypto.randomUUID(), bossId: boss!.id, profileId: profileKey(boss!), ...(order.isTestMode ? { isTestMode: true } : {}), nicknameSnapshot: order.nicknameSnapshot, orderId: order.id, type: 'order_consumption', deltaCents: -delta, beforeCents: boss!.balanceCents, afterCents: after, createdAt: new Date(now).toISOString(), notes: `订单 ${order.id}，${note}`, settledThroughSeconds: through })
     boss = { ...boss!, balanceCents: after }; store.bosses = store.bosses.map(b => b.id === boss!.id ? boss! : b)
     order.settledServiceSeconds = through; order.settledAmountCents = cumulative; changed = true
   }
@@ -43,7 +43,7 @@ export class LocalStorageOrderRepository implements OrderRepository {
     if (boss.balanceCents <= 0) throw new Error('老板当前余额必须大于 0，请先充值。')
     if (boss.hourlyRateCents <= 0) throw new Error('老板当前单价必须大于 0，请先修改单价。')
     const now = this.clock()
-    const order: Order = { id: crypto.randomUUID(), bossId: boss.id, profileId: profileKey(boss), nicknameSnapshot: boss.nickname, hourlyRateCentsSnapshot: boss.hourlyRateCents, startedAt: now, endedAt: null, status: 'active', accumulatedMs: 0, pauses: [], createdAt: now, settledServiceSeconds: 0, settledAmountCents: 0, finalChargeCents: null, balanceAtEndCents: null, endReason: null }
+    const order: Order = { id: crypto.randomUUID(), bossId: boss.id, profileId: profileKey(boss), ...(boss.isTestMode ? { isTestMode: true } : {}), nicknameSnapshot: boss.nickname, hourlyRateCentsSnapshot: boss.hourlyRateCents, startedAt: now, endedAt: null, status: 'active', accumulatedMs: 0, pauses: [], createdAt: now, settledServiceSeconds: 0, settledAmountCents: 0, finalChargeCents: null, balanceAtEndCents: null, endReason: null }
     const currentOrder = { ...order, billingModel: 'on-completion' as const }
     store.orders.push(currentOrder); writeStore(this.storage(), store); return currentOrder
   }) }

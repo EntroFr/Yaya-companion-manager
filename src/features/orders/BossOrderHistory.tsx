@@ -17,7 +17,7 @@ export function BossOrderHistory({ orders, bossId, profileId }: { orders: Order[
     {!history.total?<p className="empty-state">该日期暂无已结束的订单。</p>:<div className="table-scroll"><table className="history-table">
       <thead><tr>{['老板 ID / 昵称快照','开始时间','结束时间','有效服务时长','最终消费','结束时余额','结束原因','状态'].map(label=><th key={label} scope="col">{label}</th>)}</tr></thead>
       <tbody>{history.visible.map(order=><tr key={order.id}>
-        <td>{order.bossId}<small>{displayNickname(order.nicknameSnapshot)}</small></td><td className="nowrap">{compactTime(order.startedAt)}</td><td className="nowrap">{compactTime(order.endedAt!)}</td>
+        <td>{order.bossId}<small>{displayNickname(order.nicknameSnapshot)}{order.isTestMode && <span className="test-mode-badge">测试</span>}</small></td><td className="nowrap">{compactTime(order.startedAt)}</td><td className="nowrap">{compactTime(order.endedAt!)}</td>
         <td>{formatDuration(order.accumulatedMs)}</td><td>{formatMoney(order.finalChargeCents??0)}{order.legacyUnbilled&&<small>阶段四未计费</small>}</td><td>{order.balanceAtEndCents===null?'未记录':formatMoney(order.balanceAtEndCents)}</td><td>{order.endReason}</td><td>已结束</td>
       </tr>)}</tbody>
     </table></div>}

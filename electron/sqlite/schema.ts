@@ -136,6 +136,20 @@ WHEN NEW.type='order_consumption' AND (SELECT billing_model FROM orders WHERE or
   AND EXISTS(SELECT 1 FROM balance_entries WHERE order_id=NEW.order_id AND type='order_consumption')
 BEGIN SELECT RAISE(ABORT, '新订单只允许一条消费流水'); END;
 ` })
+migrations.push({ version: 5, name: 'profile-test-mode', sql: `
+ALTER TABLE boss_identities ADD COLUMN is_test_mode INTEGER NOT NULL DEFAULT 0 CHECK(is_test_mode IN (0,1));
+ALTER TABLE boss_identities ADD COLUMN mode_locked INTEGER NOT NULL DEFAULT 0 CHECK(mode_locked IN (0,1));
+UPDATE boss_identities SET mode_locked=1 WHERE profile_id IN (SELECT profile_id FROM orders UNION SELECT profile_id FROM balance_entries UNION SELECT profile_id FROM tips);
+CREATE TRIGGER remember_order_mode AFTER INSERT ON orders BEGIN UPDATE boss_identities SET mode_locked=1 WHERE profile_id=NEW.profile_id; END;
+CREATE TRIGGER remember_entry_mode AFTER INSERT ON balance_entries BEGIN UPDATE boss_identities SET mode_locked=1 WHERE profile_id=NEW.profile_id; END;
+CREATE TRIGGER remember_tip_mode AFTER INSERT ON tips BEGIN UPDATE boss_identities SET mode_locked=1 WHERE profile_id=NEW.profile_id; END;
+CREATE TRIGGER lock_test_mode BEFORE UPDATE OF is_test_mode ON boss_identities
+WHEN NEW.is_test_mode <> OLD.is_test_mode AND (OLD.mode_locked = 1 OR
+ EXISTS(SELECT 1 FROM orders WHERE profile_id=OLD.profile_id) OR
+ EXISTS(SELECT 1 FROM balance_entries WHERE profile_id=OLD.profile_id) OR
+ EXISTS(SELECT 1 FROM tips WHERE profile_id=OLD.profile_id))
+BEGIN SELECT RAISE(ABORT, '该老板已经产生业务记录，无法再切换测试模式。'); END;
+` })
 export function migrateSchema(db: DatabaseSync) {
   const existing = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'").all()
   if (existing.length && !existing.some(row => row.name === 'schema_migrations')) throw new Error('已有数据库不是本应用测试数据库，已停止打开，未覆盖数据。')

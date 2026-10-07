@@ -28,6 +28,7 @@ export function validateStore(store: AppStore): AppStore {
     && isCents(t.amountCents) && t.amountCents > 0 && date(t.receivedAt) && date(t.createdAt) && date(t.updatedAt) && typeof t.notes === 'string')) throw new Error()
   const balances = new Map<string, number>(store.bosses.map(b => [profileKey(b), 0]))
   for (const e of store.entries) if (!balances.has(recordProfileKey(e))) balances.set(recordProfileKey(e), 0)
+  for (const record of [...store.bosses, ...store.orders, ...store.entries, ...store.tips]) if (record.isTestMode !== undefined && typeof record.isTestMode !== 'boolean') throw new Error()
   const orderMap = new Map(store.orders.map(o => [o.id, o]))
   if (orderMap.size !== store.orders.length || store.orders.filter(o => o.status !== 'completed').length > 1) throw new Error()
   for (const o of store.orders) {

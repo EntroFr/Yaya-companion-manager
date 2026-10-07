@@ -1,5 +1,5 @@
 import { dataAccess } from '../data/dataAccess'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Boss } from './types'
 import { moneyInput, parseMoney } from '../../utils/money'
@@ -9,6 +9,14 @@ export function BossForm({ boss, onSaved, onCancel, onBusyChange }: { boss?: Bos
   const [nickname, setNickname] = useState(boss?.nickname ?? '')
   const [rate, setRate] = useState(moneyInput(boss?.hourlyRateCents ?? 3500))
   const [notes, setNotes] = useState(boss?.notes ?? '')
+  const [isTestMode, setTestMode] = useState(!!boss?.isTestMode)
+  const [modeLocked, setModeLocked] = useState(!!boss)
+  useEffect(() => {
+    if (!boss) return
+    let alive = true
+    void dataAccess.bosses.modeLocked(boss.id).then(locked => { if (alive) setModeLocked(locked) }).catch(() => { if (alive) setModeLocked(true) })
+    return () => { alive = false }
+  }, [boss])
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -16,7 +24,7 @@ export function BossForm({ boss, onSaved, onCancel, onBusyChange }: { boss?: Bos
     if (!rate.trim()) { setError('请填写当前单价。'); return }
     setSaving(true); onBusyChange?.(true)
     try {
-      const fields = { nickname, hourlyRateCents: parseMoney(rate), notes }
+      const fields = { isTestMode, nickname, hourlyRateCents: parseMoney(rate), notes }
       const saved = boss ? await dataAccess.bosses.update(boss.id, fields) : await dataAccess.bosses.create({ id, ...fields })
       await onSaved(saved)
     } catch (err) { setError(message(err)) }
@@ -29,6 +37,11 @@ export function BossForm({ boss, onSaved, onCancel, onBusyChange }: { boss?: Bos
         <label>老板 ID <span className="required">*</span><input autoFocus={!boss} value={id} onChange={e => setId(e.target.value)} readOnly={!!boss} required aria-describedby="id-help" /><small id="id-help">{boss ? 'ID 已锁定，创建后不可修改。' : '手动输入唯一 ID，区分大小写；创建后不可修改。'}</small></label>
         <label>昵称 / 备注名（选填）<input autoFocus={!!boss} value={nickname} onChange={e => setNickname(e.target.value)} /></label>
         <label>当前单价（元 / 小时） <span className="required">*</span><input type="number" value={rate} onChange={e => setRate(e.target.value)} min="0" max="1000000" step="0.01" required /><small>默认 35 元 / 小时，可保留两位小数。</small></label>
+        <div className="full-width test-mode-setting">
+          <label className="sound-control"><span>测试模式</span><input className="sound-switch-input" type="checkbox" role="switch" aria-label="测试模式" aria-checked={isTestMode} checked={isTestMode} disabled={modeLocked || saving} onChange={event => setTestMode(event.target.checked)} /><span className="sound-switch-track" aria-hidden="true" /></label>
+          <p className="muted">开启后，该老板产生的数据不会计入正式收入统计和每日 Excel 日报。</p>
+          {modeLocked && <p className="muted">该老板已经产生业务记录，无法再切换测试模式。</p>}
+        </div>
         <label className="full-width">备注（可选）<textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} /></label>
       </div>
       {error && <p className="feedback error" role="alert">{error}</p>}

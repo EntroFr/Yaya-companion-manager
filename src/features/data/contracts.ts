@@ -21,6 +21,7 @@ export interface ManagementAccess {
 }
 
 export interface BossProfileRepository {
+  modeLocked(id: string): Promise<boolean>
   list(): Promise<Boss[]>
   create(input: BossInput): Promise<Boss>
   update(id: string, changes: BossChanges): Promise<Boss>
@@ -57,6 +58,7 @@ export interface DataAccess {
   history: HistoryRepository
   statistics: StatisticsDataRepository
   changes: DataChanges
+  testing: { clear(): Promise<void> }
   development: DevelopmentDataService
   migration: MigrationAccess
   management: ManagementAccess

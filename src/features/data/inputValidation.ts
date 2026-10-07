@@ -4,7 +4,8 @@ import type { TipInput } from '../tips/types'
 export function validateBossFields(input: BossChanges): BossChanges {
   if (!input || typeof input.nickname !== 'string' || typeof input.notes !== 'string') throw new Error('请输入有效的昵称和备注。')
   if (!Number.isSafeInteger(input.hourlyRateCents) || input.hourlyRateCents < 0 || input.hourlyRateCents > 100000000) throw new Error('单价必须为 0 至 1,000,000 元之间的数字，最多保留两位小数。')
-  return { nickname: input.nickname.trim(), hourlyRateCents: input.hourlyRateCents, notes: input.notes.trim() }
+  if (input.isTestMode !== undefined && typeof input.isTestMode !== 'boolean') throw new Error('测试模式设置无效。')
+  return { ...(input.isTestMode ? { isTestMode: true } : {}), nickname: input.nickname.trim(), hourlyRateCents: input.hourlyRateCents, notes: input.notes.trim() }
 }
 export function validateTipInput(input: TipInput): TipInput {
   if (!input || !Number.isSafeInteger(input.amountCents) || input.amountCents <= 0) throw new Error('打赏金额必须大于 ¥0.00，最多保留两位小数。')

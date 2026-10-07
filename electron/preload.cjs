@@ -6,12 +6,12 @@ api.packaged = process.argv.includes('--yaya-packaged')
 api.uninstall = { status: () => ipcRenderer.invoke('yaya:uninstall:status'), execute: () => ipcRenderer.invoke('yaya:uninstall:execute') }
 if (mode !== 'local-storage') {
   const methods = {
-    bosses: ['list', 'create', 'update', 'remove'],
+    bosses: ['modeLocked', 'list', 'create', 'update', 'remove'],
     balances: ['entries', 'changeBalance', 'clearDebt'],
     orders: ['list', 'start', 'settle', 'pause', 'resume', 'complete'],
     pauses: ['list', 'pause', 'resume'],
     tips: ['list', 'create', 'update', 'remove'],
-    history: ['read'], statistics: ['read'], development: ['clear'],
+    history: ['read'], statistics: ['read'], testing: ['clear'], development: ['clear'],
     migration: ['status', 'exportData', 'prepare', 'activate', 'discard'],
     management: ['info', 'backup', 'inspectRestore', 'restore', 'cancelRestore', 'openFolder', 'openExports'],
   }

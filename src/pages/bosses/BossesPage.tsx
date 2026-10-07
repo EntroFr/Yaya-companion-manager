@@ -74,7 +74,7 @@ export function BossesPage({ orders, initialBossId = null }: { orders: OrderCont
       {loading ? <p className="empty-state">正在读取资料…</p> : bosses.length === 0 ? <p className="empty-state">还没有老板资料，点击「新增老板」开始记录。</p> : visibleBosses.length === 0 ? <p className="empty-state">没有找到匹配的老板，请尝试其他 ID 或昵称。</p> : <div className="table-scroll"><table>
         <thead><tr><th scope="col">老板 ID</th><th scope="col">昵称 / 备注名</th><th scope="col">当前余额</th><th scope="col">当前单价</th><th scope="col">创建时间</th><th scope="col">操作</th></tr></thead>
         <tbody>{visibleBosses.map(boss => <tr key={boss.id}>
-          <td className="id-cell">{boss.id}</td><td>{displayNickname(boss.nickname)}</td><td className="nowrap">{formatMoney(boss.balanceCents)}</td><td className="nowrap">{formatMoney(boss.hourlyRateCents)} / 小时</td><td>{date(boss.createdAt)}</td>
+          <td className="id-cell">{boss.id}</td><td>{displayNickname(boss.nickname)}{boss.isTestMode && <span className="test-mode-badge">测试</span>}</td><td className="nowrap">{formatMoney(boss.balanceCents)}</td><td className="nowrap">{formatMoney(boss.hourlyRateCents)} / 小时</td><td>{date(boss.createdAt)}</td>
           <td><div className="row-actions">
             <button className="text-button" disabled={busy} onClick={() => setSelectedId(boss.id)} aria-label={`查看 ${displayNickname(boss.nickname)}（${boss.id}） 的详情`}>详情</button>
             <button className="text-button" disabled={busy} onClick={() => { setForm({ boss }); setNotice('') }} aria-label={`编辑 ${displayNickname(boss.nickname)}（${boss.id}）`}>编辑</button>
@@ -87,7 +87,7 @@ export function BossesPage({ orders, initialBossId = null }: { orders: OrderCont
       <div className="section-heading"><h2 id="boss-detail-title">老板详情</h2><button className="text-button" onClick={() => setSelectedId(null)}>收起详情</button></div>
       <dl className="details-grid">
         <div><dt>自定义唯一 ID</dt><dd>{selected.id}</dd></div>
-        <div><dt>昵称 / 备注名</dt><dd>{displayNickname(selected.nickname)}</dd></div>
+        <div><dt>昵称 / 备注名</dt><dd>{displayNickname(selected.nickname)}{selected.isTestMode && <span className="test-mode-badge">测试</span>}</dd></div>
         <div><dt>当前单价</dt><dd>{formatMoney(selected.hourlyRateCents)} / 小时</dd></div>
         <div><dt>创建时间</dt><dd>{date(selected.createdAt)}</dd></div>
         <div className="full-width"><dt>备注</dt><dd className="notes">{selected.notes || '暂无备注'}</dd></div>

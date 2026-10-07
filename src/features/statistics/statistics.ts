@@ -1,3 +1,4 @@
+import { formalData } from '../data/formalData.ts'
 import type { Order } from '../orders/types'
 import type { BalanceEntry } from '../bosses/types'
 import type { Tip } from '../tips/types'
@@ -39,6 +40,7 @@ function safeSum(a: number, b: number) {
   return result
 }
 export function calculateStatistics(data: { orders: Order[]; entries: BalanceEntry[]; tips: Tip[] }, range: TimeRange): Statistics {
+  data = formalData(data)
   let serviceMs = 0, serviceIncomeCents = 0, rechargeCents = 0, tipCents = 0
   for (const order of data.orders) {
     let beforeMs = 0, throughMs = 0

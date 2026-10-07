@@ -29,7 +29,7 @@ test('SQLite 建立8张表、严格整数/外键和只执行一次 schema migrat
   const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r => r.name)
   assert.deepEqual(tables.sort(), ['boss_identities','boss_profiles','orders','order_pauses','balance_entries','tips','schema_migrations','import_batches','app_metadata'].sort())
   assert.equal(db.prepare('PRAGMA foreign_keys').get()!.foreign_keys, 1)
-  assert.equal(db.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 4)
+  assert.equal(db.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 5)
   const boss = f.create()
   assert.throws(() => db.prepare('UPDATE boss_profiles SET balance_cents = 1.5 WHERE profile_id = ?').run(boss.profileId!), /INTEGER/)
   assert.throws(() => db.prepare('DELETE FROM boss_identities WHERE profile_id = ?').run(boss.profileId!), /FOREIGN KEY/)
@@ -156,7 +156,7 @@ test('SQLite 清理所有测试数据保留schema，不删除库文件或localSt
   const f = fixture(t), boss = f.create(); f.recharge(); f.call('orders.start', 'A')
   f.call('tips.create', boss.profileId, { amountCents: 2000, receivedAt: new Date(f.now()).toISOString(), notes: '' })
   f.call('development.clear'); assert.deepEqual(f.call('history.read'), { orders: [], entries: [], tips: [] })
-  assert.equal(f.call<Boss[]>('bosses.list').length, 0); assert.equal(f.service.database.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 4)
+  assert.equal(f.call<Boss[]>('bosses.list').length, 0); assert.equal(f.service.database.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 5)
 })
 test('SQLite 重开数据库恢复active/暂停/历史，计时恢复且不写消费流水', () => {
   const dir = mkdtempSync(join(tmpdir(), 'yaya-sqlite-')), file = join(dir, 'yaya-companion-test.db')
@@ -173,7 +173,7 @@ test('SQLite 重开数据库恢复active/暂停/历史，计时恢复且不写�
     assert.equal((service.execute('orders.list') as Order[])[0].status, 'paused')
     assert.equal(serviceSeconds((service.execute('orders.list') as Order[])[0], now), 2700)
     assert.equal((service.execute('bosses.list') as Boss[])[0].profileId, boss.profileId)
-    assert.equal(service.database.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 4)
+    assert.equal(service.database.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 5)
   } finally { service.close(); rmSync(dir, { recursive: true, force: true }) }
 })
 test('SQLite 拒绝不属于本应用或高版本的数据库，不覆盖原数据', () => {
@@ -190,6 +190,6 @@ test('SQLite 高版本迁移记录被拒绝且原数据库保留', () => {
     const service = new SQLiteService(file)
     service.database.prepare('INSERT INTO schema_migrations VALUES (?, ?, ?)').run(99, 'future', Date.now()); service.close()
     assert.throws(() => new SQLiteService(file), /版本不受/)
-    const db = new DatabaseSync(file); assert.equal(db.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 5); db.close()
+    const db = new DatabaseSync(file); assert.equal(db.prepare('SELECT count(*) AS n FROM schema_migrations').get()!.n, 6); db.close()
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
