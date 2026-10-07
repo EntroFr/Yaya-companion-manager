@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>订单结算恢复测试夹具</title></head>
+<body><h1>隔离端口订单恢复测试</h1><p>仅用于端口 5175：准备余额 ¥5.00、单价 ¥35.00、已服务约23分钟的活动订单。不会修改系统时间。</p>
+<button id="prepare" disabled>准备测试订单并打开应用</button><p id="result" role="status"></p>
+<script type="module">
+import { LocalStorageBossRepository } from '/src/features/bosses/bossRepository.ts'
+import { LocalStorageOrderRepository } from '/src/features/orders/orderRepository.ts'
+const button = document.getElementById('prepare')
+const result = document.getElementById('result')
+if (location.port === '5175') button.disabled = false
+button.addEventListener('click', async () => {
+  button.disabled = true
+  try {
+    const bosses = new LocalStorageBossRepository()
+    const orders = new LocalStorageOrderRepository()
+    if ((await orders.list()).some(order => order.status !== 'completed')) throw new Error('测试端口已有未结束订单，请先结束。')
+    const id = 'billing-test-' + Date.now()
+    await bosses.create({ id, nickname: '结算恢复测试老板', hourlyRateCents: 3500, notes: '隔离端口自动结算恢复测试' })
+    await bosses.changeBalance(id, { type: 'recharge', amountCents: 500, notes: '测试初始余额' })
+    const past = Date.now() - 23 * 60 * 1000
+    await new LocalStorageOrderRepository({ clock: () => past }).start(id)
+    location.href = '/#dashboard'
+  } catch (error) { result.textContent = error.message; button.disabled = false }
+})
+</script></body></html>

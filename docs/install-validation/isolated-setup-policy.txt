@@ -1,0 +1,73 @@
+[07/10/26 12:45:15] warn: Program: Install path C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338 already exists, burning it to the ground
+[07/10/26 12:45:16] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\Administraror\AppData\Local\SquirrelTemp
+[07/10/26 12:45:16] info: CheckForUpdateImpl: First run, starting from scratch
+[07/10/26 12:45:16] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338\app-1.1.2
+[07/10/26 12:45:18] info: LogHost: Rigging execution stub for YayaDiary_ExecutionStub.exe to C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338\YayaDiary.exe
+[07/10/26 12:45:18] info: LogHost: Rigging execution stub for YayaDiary_ExecutionStub_ExecutionStub.exe to C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338\YayaDiary_ExecutionStub.exe
+[07/10/26 12:45:19] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338\app-1.1.2\YayaDiary.exe]
+[07/10/26 12:45:24] error: ApplyReleasesImpl: Couldn't run Squirrel hook, continuing: C:\Users\Administraror\AppData\Local\YayaInstallCheck20261007124338\app-1.1.2\YayaDiary.exe: System.ComponentModel.Win32Exception (0x80004005): 应用程序控制策略已阻止此文件。
+   在 System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 Squirrel.Utility.<InvokeProcessAsync>d__11.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass10_0.<<invokePostInstall>b__0>d.MoveNext()
+[07/10/26 12:45:28] error: IEnableLogger: Failed to invoke post-install: System.ComponentModel.Win32Exception (0x80004005): 应用程序控制策略已阻止此文件。
+   在 System.Diagnostics.Process.StartWithShellExecuteEx(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 Squirrel.EnumerableExtensions.ForEach[TSource](IEnumerable`1 source, Action`1 onNext)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<invokePostInstall>d__10.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.Utility.<LogIfThrows>d__42.MoveNext()
+[07/10/26 12:45:28] fatal: Finished with unhandled exception: System.AggregateException: 发生一个或多个错误。 ---> System.ComponentModel.Win32Exception: 应用程序控制策略已阻止此文件。
+   在 System.Diagnostics.Process.StartWithShellExecuteEx(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 Squirrel.EnumerableExtensions.ForEach[TSource](IEnumerable`1 source, Action`1 onNext)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<invokePostInstall>d__10.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.Utility.<LogIfThrows>d__42.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<ApplyReleases>d__2.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.<FullInstall>d__11.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.Update.Program.<Install>d__4.MoveNext()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   在 System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   在 Squirrel.Update.Program.executeCommandLine(String[] args)
+   在 Squirrel.Update.Program.main(String[] args)
+---> (内部异常 #0) System.ComponentModel.Win32Exception (0x80004005): 应用程序控制策略已阻止此文件。
+   在 System.Diagnostics.Process.StartWithShellExecuteEx(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 Squirrel.EnumerableExtensions.ForEach[TSource](IEnumerable`1 source, Action`1 onNext)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<invokePostInstall>d__10.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.Utility.<LogIfThrows>d__42.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<ApplyReleases>d__2.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.<FullInstall>d__11.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.Update.Program.<Install>d__4.MoveNext()<---
+
+

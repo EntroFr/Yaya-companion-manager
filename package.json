@@ -1,0 +1,47 @@
+{
+  "name": "yaya-companion-manager",
+  "private": true,
+  "version": "1.1.2",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.mts",
+    "dev": "vite",
+    "build": "tsc -b && vite build && node scripts/build-electron.mjs",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "electron:dev": "node scripts/electron-dev.mjs",
+    "electron:local": "node scripts/electron-local.mjs",
+    "electron:test": "node scripts/electron-smoke.mjs",
+    "electron:dev:sqlite": "node scripts/electron-dev.mjs --sqlite-test",
+    "electron:local:sqlite": "node scripts/electron-local.mjs --sqlite-test",
+    "electron:dev:formal": "node scripts/electron-dev.mjs --sqlite",
+    "electron:local:formal": "node scripts/electron-local.mjs --sqlite",
+    "package:win": "pnpm build && electron-forge package --platform win32 --arch x64",
+    "make:win": "pnpm build && electron-forge make --platform win32 --arch x64",
+    "make:portable": "pnpm package:win && node scripts/make-portable.mjs"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "1.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-squirrel": "8.0.1",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.5.1",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  },
+  "productName": "Yaya的陪玩日记",
+  "main": "electron/main.cjs",
+  "config": {
+    "forge": "./forge.config.cjs"
+  },
+  "author": "Yaya",
+  "description": "本地陪玩工作日记"
+}

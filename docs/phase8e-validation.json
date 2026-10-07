@@ -1,0 +1,166 @@
+{
+  "phase": "8E",
+  "version": "1.0.0",
+  "schemaVersion": 3,
+  "tests": 128,
+  "lint": "passed",
+  "build": "passed",
+  "electronModes": [
+    "local-storage",
+    "sqlite-test",
+    "sqlite"
+  ],
+  "platform": "Windows 11 x64 build 26200",
+  "installer": "out/make/squirrel.windows/x64/YayaDiary-1.0.0-Setup.exe",
+  "sha256": "1970a9c089a37a22bd7951383ca297de38f872056dd65ac33ef47106c42036b8",
+  "uninstallRetainedData": true,
+  "crossVersionUpgradeRetainedData": true,
+  "realUserDataUsed": false,
+  "reports": [
+    {
+      "ok": true,
+      "phase": "create",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.0.0",
+        "schemaVersion": 3,
+        "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\yaya-install-check-installed\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 114688,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 1,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": true
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "reopen",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.0.0",
+        "schemaVersion": 3,
+        "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\yaya-install-check-installed\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 114688,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 1,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": true
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "after-reinstall",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.0.0",
+        "schemaVersion": 3,
+        "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\yaya-install-check-installed\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 114688,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 1,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": true
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "after-upgrade",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.0.1",
+        "schemaVersion": 3,
+        "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\yaya-install-check-installed\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 114688,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 1,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": true
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "final",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.0.0",
+        "schemaVersion": 3,
+        "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\yaya-install-check-installed\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 114688,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 1,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": true
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+﻿[07/10/26 12:43:58] info: Program: Starting Squirrel Updater: --update C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\new
+[07/10/26 12:43:58] info: Program: Starting update, downloading from C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\new
+[07/10/26 12:43:58] info: Program: About to update to: C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\YayaInstallCheck20261007124338
+[07/10/26 12:43:58] info: CheckForUpdateImpl: Generated new staging user ID: 898102c6-afe1-57ad-a356-109e957a4a21
+[07/10/26 12:43:58] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\new
+[07/10/26 12:43:58] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\YayaInstallCheck20261007124338\app-1.1.2
+[07/10/26 12:43:59] info: LogHost: Rigging execution stub for YayaDiary_ExecutionStub.exe to C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\YayaInstallCheck20261007124338\YayaDiary.exe
+[07/10/26 12:44:01] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\YayaInstallCheck20261007124338\app-1.1.2\YayaDiary.exe]
+[07/10/26 12:44:06] error: ApplyReleasesImpl: Couldn't run Squirrel hook, continuing: C:\Users\Administraror\AppData\Local\Temp\yaya-squirrel-check-4a2c6555f41141129d0143ebeca3987e\YayaInstallCheck20261007124338\app-1.1.2\YayaDiary.exe: System.ComponentModel.Win32Exception (0x80004005): 应用程序控制策略已阻止此文件。
+   在 System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 Squirrel.Utility.<InvokeProcessAsync>d__11.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass10_0.<<invokePostInstall>b__0>d.MoveNext()
+[07/10/26 12:44:06] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[07/10/26 12:44:06] info: ApplyReleasesImpl: Fixing up tray icons
+[07/10/26 12:44:06] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.2
+[07/10/26 12:44:06] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.1
+[07/10/26 12:44:06] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.2
+[07/10/26 12:44:06] info: Program: Finished Squirrel Updater

@@ -1,0 +1,24 @@
+{
+  "version": "1.1.2",
+  "tag": "v1.1.2-stable",
+  "tests": { "passed": 137, "failed": 0 },
+  "lint": "passed",
+  "build": "passed",
+  "electronFormalIntegration": "passed",
+  "backupRestoreWithIsolatedData": "passed",
+  "recommendedCommand": "pnpm electron:local:formal",
+  "formalDatabase": {
+    "path": "%APPDATA%/Yaya-companion-manager/sqlite/yaya-companion.db",
+    "exists": true,
+    "readOnlyCheck": true,
+    "integrity": "ok",
+    "foreignKeyErrors": 0,
+    "schemaVersion": 4,
+    "businessDataModified": false
+  },
+  "versionChanged": false,
+  "businessLogicChanged": false,
+  "installerOrPortableRebuilt": false,
+  "securityPolicyOrSigningChanged": false,
+  "gitNote": "仓库原无提交，源码及1.1.2修改作为首个完整基线提交；正式数据库与构建产物不入Git。"
+}

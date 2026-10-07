@@ -1,0 +1,106 @@
+{
+  "version": "1.1.2",
+  "zip": "out/portable/YayaDiary-1.1.2-Portable.zip",
+  "sha256": "6387a0885242ce62a4d86868b3fff7dd874c23fa7a8661faf49a9cbf76ba4204",
+  "extractedFilesMatch": 74,
+  "formalModeFixed": true,
+  "developmentManifestRemoved": true,
+  "businessSourceUnchanged": true,
+  "tests": 137,
+  "lint": "passed",
+  "directPortableLaunch": "blocked-by-Windows-application-control",
+  "fallbackElectronBusinessChecks": "passed",
+  "fallbackRestart": "passed",
+  "fallbackDirectoryChange": "passed",
+  "reports": [
+    {
+      "ok": true,
+      "phase": "create",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.1.2",
+        "schemaVersion": 4,
+        "path": "C:\\Users\\Administraror\\AppData\\Local\\Temp\\yaya-install-check-portable-9607643fd28e44528e15f23a256be071\\fallback-data\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 122880,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 2,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": false
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "reopen",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.1.2",
+        "schemaVersion": 4,
+        "path": "C:\\Users\\Administraror\\AppData\\Local\\Temp\\yaya-install-check-portable-9607643fd28e44528e15f23a256be071\\fallback-data\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 122880,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 2,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": false
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    },
+    {
+      "ok": true,
+      "phase": "portable-new-folder",
+      "info": {
+        "name": "Yaya的陪玩日记",
+        "appVersion": "1.1.2",
+        "schemaVersion": 4,
+        "path": "C:\\Users\\Administraror\\AppData\\Local\\Temp\\yaya-install-check-portable-9607643fd28e44528e15f23a256be071\\fallback-data\\Yaya-companion-manager\\sqlite\\yaya-companion.db",
+        "size": 122880,
+        "bosses": 1,
+        "orders": 1,
+        "entries": 2,
+        "tips": 1,
+        "active": 0,
+        "paused": 0,
+        "packaged": false
+      },
+      "checks": [
+        "已安装应用启动",
+        "默认正式SQLite",
+        "Node隔离",
+        "业务CRUD",
+        "备份恢复",
+        "打开目录",
+        "hash路由",
+        "刷新持久化",
+        "正式UI隐藏开发操作"
+      ]
+    }
+  ],
+  "realUserDataModified": false,
+  "securityPolicyChanged": false
+}

@@ -1,0 +1,33 @@
+{
+  "version": "1.1.0",
+  "schemaVersion": 4,
+  "tests": 131,
+  "lint": "passed",
+  "build": "passed",
+  "electronIntegration": "passed",
+  "realAudioAndNoPeriodicWrites": "passed",
+  "legacySchema3Upgrade": "passed",
+  "migrationAndBackupCompatibility": "passed",
+  "windowsPackaging": "passed",
+  "packagedSourceMatchesBuild": true,
+  "windowsPackagedLaunch": "blocked",
+  "reason": "应用程序控制策略已阻止此文件",
+  "installer": "out/make/squirrel.windows/x64/YayaDiary-1.1.0-Setup.exe",
+  "sha256": "ee55b0ac38c65a3c98f28ac498646da0963a57f144bf81b18a0eef417ad23d02",
+  "realUserDataModified": false,
+  "previousInstallerSha256": "5ab1ebe2a468ef71b28b54b46e63110ce7d9e43e3682a06f14765882b0fbe160",
+  "brandingUpdate": {
+    "sidebarAvatar": "public/brand/avatar.webp",
+    "windowsIcon": "public/brand/app-icon.ico",
+    "exeAndSetupIconSizesVerified": [
+      16,
+      24,
+      32,
+      48,
+      64,
+      128,
+      256
+    ],
+    "versionUnchanged": true
+  }
+}

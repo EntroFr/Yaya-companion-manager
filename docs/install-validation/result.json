@@ -1,0 +1,16 @@
+{
+  "version": "1.1.2",
+  "tests": 137,
+  "lint": "passed",
+  "build": "passed",
+  "electronIntegration": "passed",
+  "windowsPackaging": "passed",
+  "installer": "out/make/squirrel.windows/x64/YayaDiary-1.1.2-Setup.exe",
+  "sha256": "aaee188e7ceb2d83607408bfce569873be6374ac84ff0dabc5432aebd37d1eaa",
+  "packagedLifecycleMatchesSource": true,
+  "normalSetupUpgrade": "blocked-by-Windows-application-control",
+  "cliExitZeroIsNotAcceptance": true,
+  "realDatabaseModified": false,
+  "originalFailureRootCause": "insufficient-original-exception-log",
+  "systemPolicyChanged": false
+}
